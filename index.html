@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Power Up 2 单元词汇听写</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 2.2em;
+        }
+
+        .day-selector {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        select {
+            padding: 10px 20px;
+            font-size: 1.1em;
+            border-radius: 10px;
+            border: 2px solid #667eea;
+            color: #2d3748;
+            outline: none;
+            cursor: pointer;
+            background: white;
+            font-weight: bold;
+            max-width: 100%;
+        }
+
+        .settings-row {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            background: #f7fafc;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px dashed #cbd5e0;
+        }
+
+        .setting-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .setting-group label {
+            color: #4a5568;
+            font-weight: 600;
+        }
+
+        .setting-group select {
+            padding: 8px 12px;
+            font-size: 1rem;
+            border: 1px solid #667eea;
+        }
+
+        .status {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+
+        .status-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 5px 10px;
+        }
+
+        .label {
+            color: #718096;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+
+        .value {
+            color: #2d3748;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .progress {
+            background: #e2e8f0;
+            border-radius: 10px;
+            height: 30px;
+            margin-bottom: 30px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .current-word {
+            text-align: center;
+            font-size: 2.2em;
+            font-weight: bold;
+            color: #2d3748;
+            margin: 40px 0;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.2;
+        }
+
+        .starting {
+            text-align: center;
+            font-size: 1.5em;
+            color: #667eea;
+            margin: 40px 0;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .controls {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin: 5px;
+            box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
+        }
+
+        button:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .answers {
+            display: none;
+            margin-top: 30px;
+        }
+
+        .answers h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .answer-list {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .answer-item {
+            padding: 12px;
+            margin-bottom: 8px;
+            background: white;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .answer-left {
+            display: flex;
+            align-items: center;
+            flex: 1;
+        }
+
+        .answer-number {
+            color: #667eea;
+            font-weight: bold;
+            margin-right: 15px;
+            min-width: 30px;
+        }
+
+        .answer-text {
+            color: #2d3748;
+            font-size: 1.2em;
+            font-weight: 500;
+        }
+
+        .answer-meaning {
+            color: #718096;
+            font-size: 1em;
+            text-align: right;
+            margin-left: 10px;
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎧 Power Up 2 单元词汇听写</h1>
+
+        <div class="day-selector">
+            <select id="daySelect" onchange="loadDay()"></select>
+        </div>
+
+        <div class="settings-row">
+            <div class="setting-group">
+                <label>每词朗读:</label>
+                <select id="repeatCount">
+                    <option value="1">1次</option>
+                    <option value="2">2次</option>
+                    <option value="3" selected>3次</option>
+                </select>
+            </div>
+            <div class="setting-group">
+                <label>写字时长:</label>
+                <select id="waitTime">
+                    <option value="5">5秒</option>
+                    <option value="8">8秒</option>
+                    <option value="10" selected>10秒</option>
+                    <option value="12">12秒</option>
+                    <option value="15">15秒</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="status">
+            <div class="status-item">
+                <span class="label">本组词数</span>
+                <span class="value" id="totalCount">0</span>
+            </div>
+            <div class="status-item">
+                <span class="label">当前进度</span>
+                <span class="value" id="currentProgress">0 / 0</span>
+            </div>
+        </div>
+
+        <div class="progress">
+            <div class="progress-bar" id="progressBar">0%</div>
+        </div>
+
+        <div class="current-word" id="currentWord" style="display: none;"></div>
+        <div class="starting" id="starting">准备开始...</div>
+
+        <div class="controls">
+            <button id="startBtn" onclick="startDictation()">开始听写</button>
+            <button id="pauseBtn" onclick="pauseDictation()" style="display: none;" disabled>暂停</button>
+            <button id="resumeBtn" onclick="resumeDictation()" style="display: none;">继续</button>
+            <button id="restartBtn" onclick="resetDictation()" style="display: none; background: #e53e3e;">重置</button>
+        </div>
+
+        <div class="answers" id="answers">
+            <h2>📝 听写答案</h2>
+            <div class="answer-list" id="answerList"></div>
+        </div>
+    </div>
+
+    <script>
+        // 词汇数据 (基于 PU2指引单.pdf 整理)
+        const wordData = {
+            "Unit 1 Vocabulary 1 (Countryside)": [
+                { "text": "countryside", "meaning": "乡村" },
+                { "text": "mountain", "meaning": "山" },
+                { "text": "lake", "meaning": "湖" },
+                { "text": "river", "meaning": "河" },
+                { "text": "forest", "meaning": "森林" },
+                { "text": "ground", "meaning": "地" },
+                { "text": "grass", "meaning": "草" },
+                { "text": "leaf (leaves)", "meaning": "树叶 (复数)" },
+                { "text": "field", "meaning": "田地" },
+                { "text": "tractor", "meaning": "拖拉机" },
+                { "text": "rock", "meaning": "岩石, 大石头" },
+                { "text": "outside", "meaning": "在外面" }
+            ],
+            "Unit 1 Vocabulary 2 (Daily routines)": [
+                { "text": "get dressed", "meaning": "穿衣服" },
+                { "text": "wake up", "meaning": "醒醒" },
+                { "text": "get up", "meaning": "起床" },
+                { "text": "squeeze toothpaste on the toothbrush", "meaning": "把牙膏挤到牙刷上" },
+                { "text": "clean my teeth", "meaning": "清洗我的牙齿" },
+                { "text": "have a shower", "meaning": "洗个澡" },
+                { "text": "get my towel", "meaning": "拿上我的毛巾" },
+                { "text": "get dry", "meaning": "擦干/弄干" },
+                { "text": "sit down for breakfast", "meaning": "坐下来吃早饭" },
+                { "text": "daily routines", "meaning": "日常生活" },
+                { "text": "do my homework", "meaning": "做我的回家作业" },
+                { "text": "go to bed", "meaning": "去睡觉" },
+                { "text": "have breakfast/lunch/dinner", "meaning": "吃早/中/晚餐" },
+                { "text": "What time", "meaning": "几点?" }
+            ],
+            "Unit 2 Vocabulary 1 (Days of week)": [
+                { "text": "Sunday", "meaning": "周日" },
+                { "text": "Monday", "meaning": "周一" },
+                { "text": "Tuesday", "meaning": "周二" },
+                { "text": "Wednesday", "meaning": "周三" },
+                { "text": "Thursday", "meaning": "周四" },
+                { "text": "Friday", "meaning": "周五" },
+                { "text": "Saturday", "meaning": "周六" },
+                { "text": "favourite", "meaning": "最喜欢的" },
+                { "text": "towel", "meaning": "浴巾" },
+                { "text": "weekend", "meaning": "周末" },
+                { "text": "feed", "meaning": "喂养" },
+                { "text": "a week", "meaning": "一周" },
+                { "text": "come before", "meaning": "在...之前来临" },
+                { "text": "come after", "meaning": "在...之后来临" },
+                { "text": "a day", "meaning": "一天" },
+                { "text": "swimsuit", "meaning": "泳衣" },
+                { "text": "Maths", "meaning": "数学" }
+            ],
+            "Unit 2 Vocabulary 2 (Free time activities)": [
+                { "text": "listen to music", "meaning": "听音乐" },
+                { "text": "write an email", "meaning": "写一封电子邮件" },
+                { "text": "go skating", "meaning": "去溜冰" },
+                { "text": "read a comic", "meaning": "看漫画" },
+                { "text": "go shopping", "meaning": "去购物" },
+                { "text": "watch films", "meaning": "看电影" },
+                { "text": "Do you ever...?", "meaning": "你有没有..过?" },
+                { "text": "how often", "meaning": "多久一次" },
+                { "text": "watch a DVD", "meaning": "看DVD" },
+                { "text": "listen to a CD", "meaning": "听CD" }
+            ],
+            "Unit 3 Vocabulary 1 (Jobs and parties)": [
+                { "text": "surprise", "meaning": "惊喜的" },
+                { "text": "costume", "meaning": "服装" },
+                { "text": "party", "meaning": "派对" },
+                { "text": "clown", "meaning": "小丑" },
+                { "text": "film star", "meaning": "电影明星" },
+                { "text": "pop star", "meaning": "歌星" },
+                { "text": "treasure", "meaning": "金银财宝" },
+                { "text": "pirate", "meaning": "海盗" },
+                { "text": "cook", "meaning": "厨师" },
+                { "text": "nurse", "meaning": "护士" },
+                { "text": "dentist", "meaning": "牙科医生" },
+                { "text": "present", "meaning": "礼物" },
+                { "text": "doctor", "meaning": "医生" },
+                { "text": "farmer", "meaning": "农民" }
+            ],
+            "Unit 3 Vocabulary 2 (Physical descriptions)": [
+                { "text": "thin", "meaning": "瘦的, 细的" },
+                { "text": "tall", "meaning": "高的" },
+                { "text": "straight", "meaning": "直的" },
+                { "text": "blonde", "meaning": "金黄色的" },
+                { "text": "scarecrow", "meaning": "稻草人" },
+                { "text": "short", "meaning": "短的" },
+                { "text": "fat", "meaning": "胖的" },
+                { "text": "beard", "meaning": "胡须" },
+                { "text": "moustache", "meaning": "小胡子" },
+                { "text": "ugly", "meaning": "丑的" },
+                { "text": "a purple nose", "meaning": "一个紫色的鼻子" },
+                { "text": "fair", "meaning": "白皙的/金黄色的" },
+                { "text": "curly", "meaning": "卷曲的" },
+                { "text": "dirty clothes", "meaning": "脏衣服" }
+            ],
+            "Unit 4 Vocabulary 1 (Extended family)": [
+                { "text": "a family photo", "meaning": "一张全家福" },
+                { "text": "grown-ups", "meaning": "成年人" },
+                { "text": "behind", "meaning": "在后面" },
+                { "text": "parents", "meaning": "双亲" },
+                { "text": "daughter", "meaning": "女儿" },
+                { "text": "uncle", "meaning": "叔叔" },
+                { "text": "son", "meaning": "儿子" },
+                { "text": "cousin", "meaning": "表弟/哥/姐/妹" },
+                { "text": "aunt", "meaning": "阿姨" },
+                { "text": "grandparents", "meaning": "祖父母" },
+                { "text": "granddaughter", "meaning": "孙女" },
+                { "text": "grandson", "meaning": "孙子" }
+            ],
+            "Unit 4 Vocabulary 2 (In and around the home)": [
+                { "text": "in the town centre", "meaning": "在小镇中心" },
+                { "text": "on the third floor", "meaning": "在三楼" },
+                { "text": "plant on his balcony", "meaning": "在阳台上种植植物" },
+                { "text": "on the roof", "meaning": "在房顶上" },
+                { "text": "in the basement", "meaning": "在地下室" },
+                { "text": "go up and down", "meaning": "上升和下降" },
+                { "text": "in the centre of town", "meaning": "在小镇中心" },
+                { "text": "in the small village", "meaning": "在那个小村庄里" },
+                { "text": "a village outside town", "meaning": "小镇外的一个村庄" },
+                { "text": "inside our house", "meaning": "在我们的房子里" },
+                { "text": "upstairs", "meaning": "在楼上" },
+                { "text": "downstairs", "meaning": "在楼下" }
+            ],
+            "Unit 5 Vocabulary 1 (Wild and domestic animals)": [
+                { "text": "in a wildlife park", "meaning": "在一个野生动物园" },
+                { "text": "bear", "meaning": "熊" },
+                { "text": "bat", "meaning": "球棒/蝙蝠" },
+                { "text": "parrot", "meaning": "鹦鹉" },
+                { "text": "rabbit", "meaning": "兔子" },
+                { "text": "kangaroo", "meaning": "袋鼠" },
+                { "text": "panda", "meaning": "熊猫" },
+                { "text": "lion", "meaning": "狮子" },
+                { "text": "in the afternoon", "meaning": "在下午" },
+                { "text": "cage", "meaning": "笼子" },
+                { "text": "whale", "meaning": "鲸" },
+                { "text": "dolphin", "meaning": "海豚" },
+                { "text": "penguin", "meaning": "企鹅" }
+            ],
+            "Unit 5 Vocabulary 2 (Action verbs)": [
+                { "text": "our masks", "meaning": "我们的面具" },
+                { "text": "move like wild animals", "meaning": "像野生动物一样移动" },
+                { "text": "run like a lion", "meaning": "像一只狮子一样奔跑" },
+                { "text": "climb like a kangaroo", "meaning": "像袋鼠一样攀登" },
+                { "text": "hide", "meaning": "躲藏" },
+                { "text": "like to fly", "meaning": "喜欢飞" },
+                { "text": "lose banana", "meaning": "失去香蕉" },
+                { "text": "fall in the sky", "meaning": "在天空中坠落" },
+                { "text": "jump like a rabbit", "meaning": "像兔子一样跳跃" },
+                { "text": "fly like a bat", "meaning": "像蝙蝠一样飞行" },
+                { "text": "is/am/are slow", "meaning": "慢的" },
+                { "text": "move like a snail", "meaning": "像蜗牛一样爬行" },
+                { "text": "walk like a penguin", "meaning": "像企鹅一样行走" }
+            ],
+            "Unit 6 Vocabulary 1 (The weather)": [
+                { "text": "make a video call", "meaning": "视频通话" },
+                { "text": "wind", "meaning": "风" },
+                { "text": "windy", "meaning": "有风的" },
+                { "text": "cloud", "meaning": "云" },
+                { "text": "cloudy", "meaning": "多云的" },
+                { "text": "rainbow", "meaning": "彩虹" },
+                { "text": "hot", "meaning": "热的" },
+                { "text": "rain", "meaning": "雨" },
+                { "text": "rainy", "meaning": "下雨的/多雨的" },
+                { "text": "cold", "meaning": "冷的" },
+                { "text": "sun", "meaning": "太阳" },
+                { "text": "sunny", "meaning": "晴朗的" },
+                { "text": "snow", "meaning": "雪" },
+                { "text": "snowy", "meaning": "下雪的/多雪的" }
+            ],
+            "Unit 6 Vocabulary 2 (Clothes)": [
+                { "text": "put on your T-shirt", "meaning": "穿上你的T恤" },
+                { "text": "go out to play", "meaning": "出去玩" },
+                { "text": "sweater", "meaning": "毛衣" },
+                { "text": "scarf", "meaning": "围巾" },
+                { "text": "coat", "meaning": "外套" },
+                { "text": "boots", "meaning": "长筒靴" },
+                { "text": "come inside", "meaning": "到里面" },
+                { "text": "near the fire", "meaning": "在火旁" },
+                { "text": "take off your coat", "meaning": "脱下你的外套" },
+                { "text": "sit on that chair", "meaning": "坐在椅子上" }
+            ],
+            "Unit 7 Vocabulary 1 (Food)": [
+                { "text": "a cooking class", "meaning": "一节烹饪课" },
+                { "text": "cup", "meaning": "杯具" },
+                { "text": "soup", "meaning": "汤" },
+                { "text": "plate", "meaning": "盘子" },
+                { "text": "pasta", "meaning": "意大利面" },
+                { "text": "bottle", "meaning": "瓶子" },
+                { "text": "bring the food home", "meaning": "把食物带回家" },
+                { "text": "ate it all", "meaning": "吃掉所有" },
+                { "text": "drank hot chocolate", "meaning": "喝热巧克力" },
+                { "text": "saw them", "meaning": "看他们" },
+                { "text": "made a pasta salad", "meaning": "做一个意大利面沙拉" },
+                { "text": "only got vegetables", "meaning": "只有蔬菜" },
+                { "text": "glass", "meaning": "玻璃杯" },
+                { "text": "salad", "meaning": "沙拉" },
+                { "text": "bowl", "meaning": "碗" },
+                { "text": "cheese", "meaning": "芝士" },
+                { "text": "sandwich", "meaning": "三明治" },
+                { "text": "vegetable", "meaning": "蔬菜" }
+            ],
+            "Unit 7 Vocabulary 2 (Actions in the kitchen)": [
+                { "text": "cook the dinner", "meaning": "做晚饭" },
+                { "text": "wear hats", "meaning": "戴帽子" },
+                { "text": "wash the glasses", "meaning": "洗玻璃杯" },
+                { "text": "carry the plates", "meaning": "拿盘子" },
+                { "text": "drop the bowl", "meaning": "放下碗" },
+                { "text": "mustn't be late", "meaning": "禁止迟到" },
+                { "text": "boil the pasta", "meaning": "煮意大利面" },
+                { "text": "fry the fish", "meaning": "用油煎鱼" },
+                { "text": "start the dinner", "meaning": "开始晚餐" },
+                { "text": "stop crying", "meaning": "停止哭泣" },
+                { "text": "don't cry", "meaning": "别哭" },
+                { "text": "cut the onions", "meaning": "切洋葱" },
+                { "text": "all right", "meaning": "好的" }
+            ],
+            "Unit 8 Vocabulary 1 (A day trip)": [
+                { "text": "plan a trip", "meaning": "计划一个旅行" },
+                { "text": "ride", "meaning": "乘骑设施" },
+                { "text": "map", "meaning": "地图" },
+                { "text": "funfair", "meaning": "游乐场" },
+                { "text": "city centre", "meaning": "城市中心" },
+                { "text": "station", "meaning": "车站" },
+                { "text": "road", "meaning": "路" },
+                { "text": "car park", "meaning": "停车场" },
+                { "text": "ticket", "meaning": "票" }
+            ],
+            "Unit 8 Vocabulary 2 (Places in town)": [
+                { "text": "last week", "meaning": "上周" },
+                { "text": "did a lot of things", "meaning": "做许多事" },
+                { "text": "sat in the café", "meaning": "坐在咖啡馆里" },
+                { "text": "in the pretty square", "meaning": "在美丽的广场上" },
+                { "text": "saw a film", "meaning": "看电影" },
+                { "text": "at the cinema", "meaning": "在电影院" },
+                { "text": "got a book from the library", "meaning": "从图书馆得来一本书" },
+                { "text": "in the hospital", "meaning": "在医院" },
+                { "text": "chose some clothes", "meaning": "选择一些衣服" },
+                { "text": "at the shopping centre", "meaning": "在购物中心" },
+                { "text": "bought some food", "meaning": "买一些食物" },
+                { "text": "at the supermarket", "meaning": "在超市" },
+                { "text": "played tennis", "meaning": "打网球" },
+                { "text": "at the sports centre", "meaning": "在运动中心" },
+                { "text": "went for a swim", "meaning": "去游泳" },
+                { "text": "at the swimming pool", "meaning": "在游泳池里" },
+                { "text": "bought some vegetables", "meaning": "买一些蔬菜" },
+                { "text": "at the market", "meaning": "在市场" },
+                { "text": "caught a bus home", "meaning": "乘公共汽车回家" },
+                { "text": "bus station", "meaning": "公交车站" }
+            ],
+            "Unit 9 Vocabulary 1 (Adjectives for opinions)": [
+                { "text": "a day trip", "meaning": "一日之旅" },
+                { "text": "She's really surprised.", "meaning": "她真的很惊讶。" },
+                { "text": "He's frightened.", "meaning": "他很害怕。" },
+                { "text": "It's dangerous.", "meaning": "它很危险。" },
+                { "text": "It's difficult to catch someone.", "meaning": "要抓到一个人很难。" },
+                { "text": "It isn't easy.", "meaning": "它不简单。" },
+                { "text": "I'm hungry.", "meaning": "我饿了。" },
+                { "text": "The circus is exciting.", "meaning": "这个马戏团表演很刺激。" },
+                { "text": "It isn't boring.", "meaning": "它不无聊。" },
+                { "text": "I'm afraid.", "meaning": "我很害怕。" },
+                { "text": "I'm tired.", "meaning": "我累了。" },
+                { "text": "Is everyone thirsty?", "meaning": "每个人口渴吗?" }
+            ],
+            "Unit 9 Vocabulary 2 (A new adventure)": [
+                { "text": "email", "meaning": "邮件" },
+                { "text": "DVD", "meaning": "数字化视频光盘" },
+                { "text": "job", "meaning": "职业" },
+                { "text": "go on an adventure", "meaning": "去冒险" },
+                { "text": "apartment", "meaning": "公寓" },
+                { "text": "A world tour!", "meaning": "世界之旅!" },
+                { "text": "Call/Text our family.", "meaning": "给我们家打电话/发短信。" },
+                { "text": "Email our friends.", "meaning": "给我们的朋友发邮件。" },
+                { "text": "get busy", "meaning": "忙起来" },
+                { "text": "book", "meaning": "书" },
+                { "text": "blanket", "meaning": "毯子" },
+                { "text": "An exciting trip!", "meaning": "多么刺激的旅行!" }
+            ]
+        };
+
+        let currentDayWords = [];
+        let currentIndex = 0;
+        let isPaused = false;
+        let isRunning = false;
+
+        window.onload = function() {
+            initDaySelector();
+            loadDay();
+        };
+
+        function initDaySelector() {
+            const select = document.getElementById('daySelect');
+            const keys = Object.keys(wordData);
+            
+            keys.forEach(key => {
+                const option = document.createElement('option');
+                option.value = key;
+                option.text = key + ` (${wordData[key].length} words)`;
+                select.appendChild(option);
+            });
+        }
+
+        function loadDay() {
+            if (isRunning) {
+                alert("请先停止当前听写再切换天数！");
+                // 恢复之前的选择
+                const previousKey = Object.keys(wordData).find(key => wordData[key] === currentDayWords);
+                if (previousKey) document.getElementById('daySelect').value = previousKey;
+                return;
+            }
+            
+            const selectedDay = document.getElementById('daySelect').value;
+            currentDayWords = wordData[selectedDay];
+            
+            document.getElementById('totalCount').textContent = currentDayWords.length;
+            document.getElementById('currentProgress').textContent = `0 / ${currentDayWords.length}`;
+            document.getElementById('progressBar').style.width = '0%';
+            document.getElementById('progressBar').textContent = '0%';
+            
+            resetUI();
+        }
+
+        function resetUI() {
+            document.getElementById('answers').style.display = 'none';
+            document.getElementById('starting').style.display = 'flex';
+            document.getElementById('starting').textContent = '准备就绪，点击开始';
+            document.getElementById('currentWord').style.display = 'none';
+            document.getElementById('startBtn').style.display = 'inline-block';
+            document.getElementById('pauseBtn').style.display = 'none';
+            document.getElementById('resumeBtn').style.display = 'none';
+            document.getElementById('restartBtn').style.display = 'none';
+            document.getElementById('daySelect').disabled = false;
+            document.getElementById('repeatCount').disabled = false;
+            document.getElementById('waitTime').disabled = false;
+        }
+
+        function unlockAudio() {
+            const u = new SpeechSynthesisUtterance("");
+            window.speechSynthesis.speak(u);
+        }
+
+        async function startDictation() {
+            if (!('speechSynthesis' in window)) {
+                alert("您的浏览器不支持语音朗读功能，请使用 Chrome/Edge/Safari 等现代浏览器。");
+                return;
+            }
+
+            unlockAudio();
+
+            isRunning = true;
+            currentIndex = 0;
+            document.getElementById('daySelect').disabled = true;
+            document.getElementById('repeatCount').disabled = true;
+            document.getElementById('waitTime').disabled = true;
+            document.getElementById('startBtn').style.display = 'none';
+            document.getElementById('pauseBtn').style.display = 'inline-block';
+            document.getElementById('pauseBtn').disabled = false;
+            document.getElementById('restartBtn').style.display = 'none';
+            document.getElementById('answers').style.display = 'none';
+
+            const startingEl = document.getElementById('starting');
+            startingEl.style.display = 'flex';
+            
+            for (let i = 3; i > 0; i--) {
+                startingEl.textContent = `听写将在 ${i} 秒后开始...`;
+                await sleep(1000);
+            }
+            startingEl.style.display = 'none';
+            document.getElementById('currentWord').style.display = 'flex';
+
+            for (let i = 0; i < currentDayWords.length; i++) {
+                currentIndex = i;
+                updateProgress();
+                await dictateItem(i);
+                
+                while (isPaused) {
+                    await sleep(100);
+                }
+            }
+
+            finishDictation();
+        }
+
+        async function dictateItem(index) {
+            const word = currentDayWords[index];
+            const displayEl = document.getElementById('currentWord');
+            
+            const repeatCount = parseInt(document.getElementById('repeatCount').value);
+            const waitTime = parseInt(document.getElementById('waitTime').value);
+
+            displayEl.textContent = `单词 ${index + 1}`;
+            displayEl.style.color = "#2d3748";
+
+            for (let r = 0; r < repeatCount; r++) {
+                if (isPaused) return;
+                
+                await speak(word.text);
+                
+                if (r < repeatCount - 1) {
+                    await sleep(1500);
+                }
+            }
+
+            displayEl.style.color = "#718096";
+            for (let t = waitTime; t > 0; t--) {
+                if (isPaused) return;
+                displayEl.textContent = `等待 ${t} 秒...`;
+                await sleep(1000);
+            }
+        }
+
+        function speak(text) {
+            return new Promise((resolve) => {
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US'; // 美式英语
+                utterance.rate = 0.8; 
+                
+                utterance.onend = () => {
+                    resolve();
+                };
+                
+                utterance.onerror = (e) => {
+                    console.error("Speech error:", e);
+                    resolve();
+                };
+
+                window.speechSynthesis.speak(utterance);
+            });
+        }
+
+        function updateProgress() {
+            const total = currentDayWords.length;
+            const current = currentIndex + 1;
+            const percentage = Math.round((current / total) * 100);
+            
+            document.getElementById('currentProgress').textContent = `${current} / ${total}`;
+            const bar = document.getElementById('progressBar');
+            bar.style.width = `${percentage}%`;
+            bar.textContent = `${percentage}%`;
+        }
+
+        function pauseDictation() {
+            isPaused = true;
+            window.speechSynthesis.cancel();
+            document.getElementById('pauseBtn').style.display = 'none';
+            document.getElementById('resumeBtn').style.display = 'inline-block';
+            document.getElementById('currentWord').textContent = "已暂停";
+        }
+
+        function resumeDictation() {
+            isPaused = false;
+            document.getElementById('resumeBtn').style.display = 'none';
+            document.getElementById('pauseBtn').style.display = 'inline-block';
+        }
+
+        function resetDictation() {
+            window.speechSynthesis.cancel();
+            isRunning = false;
+            isPaused = false;
+            resetUI();
+            loadDay();
+        }
+
+        function finishDictation() {
+            isRunning = false;
+            document.getElementById('currentWord').textContent = "听写完成！";
+            document.getElementById('pauseBtn').style.display = 'none';
+            document.getElementById('restartBtn').style.display = 'inline-block';
+            document.getElementById('daySelect').disabled = false;
+            document.getElementById('repeatCount').disabled = false;
+            document.getElementById('waitTime').disabled = false;
+            
+            showAnswers();
+        }
+
+        function showAnswers() {
+            const list = document.getElementById('answerList');
+            list.innerHTML = '';
+            
+            currentDayWords.forEach((word, index) => {
+                const item = document.createElement('div');
+                item.className = 'answer-item';
+                item.innerHTML = `
+                    <div class="answer-left">
+                        <span class="answer-number">${index + 1}.</span>
+                        <span class="answer-text">${word.text}</span>
+                    </div>
+                    <span class="answer-meaning">${word.meaning}</span>
+                `;
+                list.appendChild(item);
+            });
+
+            document.getElementById('answers').style.display = 'block';
+            document.getElementById('answers').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+    </script>
+</body>
+</html>
