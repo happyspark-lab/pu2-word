@@ -244,13 +244,13 @@
 
         .answer-text {
             color: #2d3748;
-            font-size: 1.2em;
-            font-weight: 500;
+            font-size: 1.7em;
+            font-weight: 600;
         }
 
         .answer-meaning {
             color: #718096;
-            font-size: 1em;
+            font-size: 1.3em;
             text-align: right;
             margin-left: 10px;
             flex: 1;
@@ -266,6 +266,15 @@
         </div>
 
         <div class="settings-row">
+            <div class="setting-group">
+                <label>语速:</label>
+                <select id="speechRate">
+                    <option value="1">正常</option>
+                    <option value="0.9">稍慢</option>
+                    <option value="0.8" selected>较慢</option>
+                    <option value="0.7">很慢</option>
+                </select>
+            </div>
             <div class="setting-group">
                 <label>每词朗读:</label>
                 <select id="repeatCount">
@@ -662,6 +671,7 @@
 
         function resetUI() {
             document.getElementById('answers').style.display = 'none';
+            document.getElementById('previewArea').style.display = 'block';
             document.getElementById('starting').style.display = 'flex';
             document.getElementById('starting').textContent = '准备就绪，点击开始';
             document.getElementById('currentWord').style.display = 'none';
@@ -670,6 +680,7 @@
             document.getElementById('resumeBtn').style.display = 'none';
             document.getElementById('restartBtn').style.display = 'none';
             document.getElementById('daySelect').disabled = false;
+            document.getElementById('speechRate').disabled = false;
             document.getElementById('repeatCount').disabled = false;
             document.getElementById('waitTime').disabled = false;
         }
@@ -690,6 +701,7 @@
             isRunning = true;
             currentIndex = 0;
             document.getElementById('daySelect').disabled = true;
+            document.getElementById('speechRate').disabled = true;
             document.getElementById('repeatCount').disabled = true;
             document.getElementById('waitTime').disabled = true;
             document.getElementById('startBtn').style.display = 'none';
@@ -697,6 +709,7 @@
             document.getElementById('pauseBtn').disabled = false;
             document.getElementById('restartBtn').style.display = 'none';
             document.getElementById('answers').style.display = 'none';
+            document.getElementById('previewArea').style.display = 'none';
 
             const startingEl = document.getElementById('starting');
             startingEl.style.display = 'flex';
@@ -753,7 +766,8 @@
             return new Promise((resolve) => {
                 const utterance = new SpeechSynthesisUtterance(text);
                 utterance.lang = 'en-US';
-                utterance.rate = 0.8; 
+                const selectedRate = document.getElementById('speechRate').value;
+                utterance.rate = parseFloat(selectedRate);
                 
                 utterance.onend = () => {
                     resolve();
@@ -807,8 +821,10 @@
             document.getElementById('pauseBtn').style.display = 'none';
             document.getElementById('restartBtn').style.display = 'inline-block';
             document.getElementById('daySelect').disabled = false;
+            document.getElementById('speechRate').disabled = false;
             document.getElementById('repeatCount').disabled = false;
             document.getElementById('waitTime').disabled = false;
+            document.getElementById('previewArea').style.display = 'none';
             
             showAnswers();
         }
