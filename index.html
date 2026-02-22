@@ -188,6 +188,17 @@
             box-shadow: none;
         }
 
+        .preview {
+            margin-top: 30px;
+        }
+
+        .preview-list {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px dashed #cbd5e0;
+        }
+
         .answers {
             display: none;
             margin-top: 30px;
@@ -298,6 +309,10 @@
             <button id="pauseBtn" onclick="pauseDictation()" style="display: none;" disabled>暂停</button>
             <button id="resumeBtn" onclick="resumeDictation()" style="display: none;">继续</button>
             <button id="restartBtn" onclick="resetDictation()" style="display: none; background: #e53e3e;">重置</button>
+        </div>
+
+        <div class="preview" id="previewArea">
+            <div class="preview-list" id="previewList"></div>
         </div>
 
         <div class="answers" id="answers">
@@ -611,7 +626,6 @@
         function loadDay() {
             if (isRunning) {
                 alert("请先停止当前听写再切换天数！");
-                // 恢复之前的选择
                 const previousKey = Object.keys(wordData).find(key => wordData[key] === currentDayWords);
                 if (previousKey) document.getElementById('daySelect').value = previousKey;
                 return;
@@ -626,6 +640,24 @@
             document.getElementById('progressBar').textContent = '0%';
             
             resetUI();
+            renderPreview();
+        }
+
+        function renderPreview() {
+            const list = document.getElementById('previewList');
+            list.innerHTML = '';
+            currentDayWords.forEach((word, index) => {
+                const item = document.createElement('div');
+                item.className = 'answer-item';
+                item.innerHTML = `
+                    <div class="answer-left">
+                        <span class="answer-number">${index + 1}.</span>
+                        <span class="answer-text">${word.text}</span>
+                    </div>
+                    <span class="answer-meaning">${word.meaning}</span>
+                `;
+                list.appendChild(item);
+            });
         }
 
         function resetUI() {
@@ -720,7 +752,7 @@
         function speak(text) {
             return new Promise((resolve) => {
                 const utterance = new SpeechSynthesisUtterance(text);
-                utterance.lang = 'en-US'; // 美式英语
+                utterance.lang = 'en-US';
                 utterance.rate = 0.8; 
                 
                 utterance.onend = () => {
