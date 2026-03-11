@@ -1,856 +1,867 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Power Up 2 单元词汇听写</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Power Up 英语单词闯关</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --primary:#6366f1;--primary-dark:#4338ca;--primary-light:#e0e7ff;
+            --accent:#f59e0b;--accent-light:#fef3c7;
+            --success:#10b981;--success-light:#d1fae5;
+            --danger:#ef4444;--danger-light:#fee2e2;
+            --bg:linear-gradient(135deg,#ede9fe 0%,#e0e7ff 50%,#dbeafe 100%);
+            --card:rgba(255,255,255,0.96);--text:#1e1b4b;--sub:#6b7280;
+            --border:rgba(99,102,241,0.15);--shadow:0 8px 32px rgba(99,102,241,0.15);
         }
+        *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+        body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Arial,sans-serif;background:var(--bg);min-height:100vh;color:var(--text);padding:12px;}
+        .screen{display:none;}.screen.active{display:block;}
+        .card{background:var(--card);border-radius:20px;box-shadow:var(--shadow);border:1px solid var(--border);padding:22px 18px;}
+        .btn{border:none;border-radius:50px;font-weight:800;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;justify-content:center;gap:6px;}
+        .btn:active{transform:scale(0.96);}
+        .btn-primary{background:linear-gradient(135deg,#6366f1,#4338ca);color:white;padding:14px 24px;font-size:1.1rem;width:100%;box-shadow:0 6px 20px rgba(99,102,241,0.35);}
+        .btn-accent{background:linear-gradient(135deg,#f59e0b,#d97706);color:white;padding:14px 24px;font-size:1.1rem;width:100%;box-shadow:0 6px 20px rgba(245,158,11,0.35);}
+        input[type="text"]{width:100%;padding:14px 16px;border:2px solid #e0e7ff;border-radius:12px;font-size:1rem;outline:none;transition:border-color 0.2s;background:#fafafe;}
+        input:focus{border-color:var(--primary);background:white;}
+        label{display:block;font-weight:700;margin-bottom:6px;color:#4338ca;font-size:0.9rem;}
+        .badge{display:inline-flex;align-items:center;gap:4px;padding:5px 12px;border-radius:20px;font-size:0.8rem;font-weight:700;}
+        .badge-green{background:var(--success-light);color:#065f46;}
+        .badge-red{background:var(--danger-light);color:#991b1b;}
+        select{width:100%;padding:10px 12px;border:2px solid #e0e7ff;border-radius:10px;font-size:0.95rem;background:white;font-weight:700;color:var(--text);outline:none;}
+        select:focus{border-color:var(--primary);}
+        .divider{height:1px;background:#e0e7ff;margin:14px 0;}
+        .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+        .page-title{font-size:1.15rem;font-weight:800;color:var(--text);}
+        .back-btn{background:var(--primary-light);color:var(--primary-dark);border:none;border-radius:20px;padding:6px 14px;font-weight:700;font-size:0.85rem;cursor:pointer;}
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
+        /* LOGIN */
+        #screen-login{max-width:420px;margin:0 auto;padding-top:40px;}
+        .login-hero{text-align:center;margin-bottom:28px;}
+        .login-hero .emoji{font-size:4rem;margin-bottom:8px;display:block;}
+        .login-hero h1{font-size:1.8rem;color:var(--primary-dark);font-weight:900;}
+        .login-hero p{color:var(--sub);font-size:0.9rem;margin-top:4px;}
+        .user-list-title{font-size:0.8rem;color:var(--sub);margin-bottom:8px;}
+        .user-chip{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;background:var(--primary-light);border-radius:20px;margin:4px;cursor:pointer;font-weight:700;color:var(--primary-dark);font-size:0.9rem;border:2px solid transparent;transition:all 0.15s;}
+        .user-chip:active{border-color:var(--primary);transform:scale(0.97);}
+        .ios-tip{background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:10px 12px;font-size:0.8rem;color:#9a3412;margin-bottom:12px;display:none;}
 
-        .container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            padding: 40px;
-            max-width: 800px;
-            width: 100%;
-        }
+        /* HOME */
+        #screen-home{max-width:480px;margin:0 auto;}
+        .home-topbar{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;gap:8px;}
+        .stat-chip{flex:1;background:var(--card);border-radius:14px;padding:10px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.06);cursor:pointer;border:1px solid var(--border);transition:all 0.15s;}
+        .stat-chip:active{transform:scale(0.97);}
+        .stat-chip .num{font-size:1.4rem;font-weight:900;color:var(--primary-dark);}
+        .stat-chip .lbl{font-size:0.65rem;color:var(--sub);margin-top:1px;}
+        .stat-streak .num{color:#d97706;}.stat-mastered .num{color:#059669;}.stat-error .num{color:#dc2626;}
+        .greeting-bar{display:flex;align-items:center;justify-content:space-between;background:var(--card);border-radius:14px;padding:12px 16px;box-shadow:0 2px 8px rgba(0,0,0,0.06);margin-bottom:12px;border:1px solid var(--border);}
+        .greeting-name{font-size:1rem;font-weight:800;color:var(--text);}
+        .greeting-sub{font-size:0.75rem;color:var(--sub);margin-top:2px;}
+        .switch-user-btn{background:#f0f0f8;border:none;border-radius:20px;padding:6px 12px;font-size:0.75rem;font-weight:700;color:var(--sub);cursor:pointer;}
+        .selector-row{display:flex;gap:8px;margin-bottom:10px;}
+        .selector-row select{flex:1;}
+        .settings-row{display:flex;gap:8px;margin:12px 0;}
+        .setting-group{flex:1;background:#f8f7ff;border-radius:10px;padding:8px 6px;border:1px solid var(--border);text-align:center;}
+        .setting-group label{font-size:0.7rem;color:var(--sub);margin-bottom:3px;text-align:center;}
+        .setting-group select{font-size:0.85rem;padding:4px 2px;border:none;background:transparent;}
+        .review-quick-btn{width:100%;padding:15px 20px;background:linear-gradient(135deg,#f59e0b,#d97706);color:white;border:none;border-radius:14px;font-size:1.05rem;font-weight:800;cursor:pointer;box-shadow:0 6px 20px rgba(245,158,11,0.35);margin-bottom:10px;display:none;align-items:center;justify-content:space-between;}
+        .review-quick-btn .rqb-left{display:flex;align-items:center;gap:8px;}
+        .review-quick-btn .rqb-count{background:rgba(255,255,255,0.28);border-radius:20px;padding:3px 12px;font-size:0.9rem;font-weight:700;}
+        .review-alert{background:linear-gradient(135deg,#fef3c7,#fde68a);border:2px solid #f59e0b;border-radius:14px;padding:14px 16px;margin-bottom:12px;display:none;}
+        .review-alert-title{font-weight:800;color:#92400e;font-size:0.95rem;}
+        .review-alert-sub{font-size:0.8rem;color:#a16207;margin-top:4px;}
+        .preview-section{margin-top:10px;}
+        .preview-label{font-size:0.8rem;font-weight:700;color:var(--primary-dark);margin-bottom:8px;}
+        .preview-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;max-height:300px;overflow-y:auto;}
+        .preview-item{background:white;border:1px solid var(--border);border-radius:10px;padding:12px 8px;text-align:center;}
+        .preview-item .word{font-size:2.4rem;font-weight:800;color:var(--text);word-break:break-all;line-height:1.3;}
+        .preview-item .cn{font-size:0.78rem;color:var(--sub);margin-top:4px;}
+        .preview-item .num{font-size:0.65rem;color:#aaa;display:block;margin-bottom:2px;}
 
-        h1 {
-            color: #667eea;
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 2.2em;
-        }
+        /* RUNNING */
+        #screen-running{max-width:480px;margin:0 auto;}
+        .run-header{text-align:center;margin-bottom:12px;}
+        .run-unit-badge{background:var(--primary-light);color:var(--primary-dark);border-radius:20px;padding:5px 14px;font-size:0.8rem;font-weight:700;display:inline-block;}
+        .progress-wrap{margin:10px 0;}
+        .progress-bar{height:10px;background:#e0e7ff;border-radius:10px;overflow:hidden;}
+        .progress-fill{height:100%;background:linear-gradient(90deg,#6366f1,#a78bfa);width:0%;transition:width 0.3s ease-out;border-radius:10px;}
+        .progress-text{text-align:right;font-size:0.75rem;color:var(--sub);margin-top:3px;}
+        .word-stage{text-align:center;padding:20px 10px;}
+        .word-ordinal{font-size:0.85rem;color:var(--sub);margin-bottom:8px;}
+        .big-word{font-size:2.2rem;font-weight:900;color:var(--text);min-height:70px;letter-spacing:1px;word-break:break-all;line-height:1.3;}
+        .status-msg{color:var(--sub);font-size:0.9rem;margin-top:8px;min-height:24px;}
+        .countdown-ring{width:54px;height:54px;margin:10px auto;}
+        .countdown-ring svg{width:54px;height:54px;transform:rotate(-90deg);}
+        .countdown-ring circle{fill:none;stroke:#e0e7ff;stroke-width:5;}
+        .countdown-ring .arc{stroke:#6366f1;stroke-linecap:round;transition:stroke-dashoffset 0.1s linear;}
+        .countdown-num{position:relative;top:-42px;text-align:center;font-size:1.1rem;font-weight:900;color:var(--primary-dark);}
+        .run-btns{display:flex;gap:10px;margin-top:6px;}
+        .run-btn{flex:1;padding:11px;border-radius:12px;border:none;font-weight:700;font-size:0.9rem;cursor:pointer;}
+        .run-btn-pause{background:#e0e7ff;color:#4338ca;}
+        .run-btn-stop{background:#fee2e2;color:#b91c1c;}
 
-        .day-selector {
-            text-align: center;
-            margin-bottom: 20px;
-        }
+        /* RESULT */
+        #screen-result{max-width:480px;margin:0 auto;}
+        .result-hero{text-align:center;padding:16px 0 10px;}
+        .result-star{font-size:3rem;}
+        .result-title{font-size:1.3rem;font-weight:900;margin-top:6px;color:var(--primary-dark);}
+        .result-score{font-size:2.2rem;font-weight:900;color:var(--success);margin:6px 0;}
+        .result-streak{font-size:0.9rem;color:var(--sub);}
+        .result-encourage{background:linear-gradient(135deg,#e0e7ff,#dbeafe);border-radius:12px;padding:12px 16px;margin:12px 0;font-weight:700;color:#3730a3;text-align:center;font-size:0.95rem;}
+        .answer-check-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:10px;}
+        .answer-check-item{background:white;border:2px solid #e0e7ff;border-radius:10px;padding:12px 8px;text-align:center;position:relative;}
+        .answer-check-item .word{font-size:2.4rem;font-weight:800;color:var(--text);word-break:break-all;line-height:1.3;}
+        .answer-check-item .cn{font-size:0.78rem;color:var(--sub);margin-top:4px;}
+        .answer-check-item .num{font-size:0.65rem;color:#aaa;display:block;margin-bottom:2px;}
+        .answer-check-item.wrong{border-color:#fca5a5;background:#fff1f2;}
+        .answer-check-item.wrong .word{color:#b91c1c;}
+        .check-box{position:absolute;top:4px;right:4px;width:20px;height:20px;border-radius:5px;border:2px solid #d1d5db;background:white;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.7rem;}
+        .check-box.checked{background:#fee2e2;border-color:#fca5a5;color:#b91c1c;}
+        .result-summary{display:flex;gap:10px;justify-content:center;margin:12px 0;}
+        .summary-chip{padding:8px 16px;border-radius:20px;font-weight:700;font-size:0.85rem;}
 
-        select {
-            padding: 10px 20px;
-            font-size: 1.1em;
-            border-radius: 10px;
-            border: 2px solid #667eea;
-            color: #2d3748;
-            outline: none;
-            cursor: pointer;
-            background: white;
-            font-weight: bold;
-            max-width: 100%;
-        }
+        /* WORD LISTS */
+        #screen-mastered,#screen-errors{max-width:480px;margin:0 auto;}
+        .word-list-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px;margin-top:10px;}
+        .word-card{background:white;border:1px solid var(--border);border-radius:10px;padding:10px 6px;text-align:center;}
+        .word-card .w{font-size:0.95rem;font-weight:800;color:var(--text);word-break:break-all;}
+        .word-card .wc{font-size:0.75rem;color:var(--sub);margin-top:3px;}
+        .word-card .cnt{font-size:0.7rem;color:var(--sub);margin-top:3px;}
+        .empty-tip{text-align:center;color:var(--sub);padding:30px;font-size:0.9rem;}
 
-        .settings-row {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin-bottom: 25px;
-            flex-wrap: wrap;
-            background: #f7fafc;
-            padding: 15px;
-            border-radius: 12px;
-            border: 1px dashed #cbd5e0;
-        }
-
-        .setting-group {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .setting-group label {
-            color: #4a5568;
-            font-weight: 600;
-        }
-
-        .setting-group select {
-            padding: 8px 12px;
-            font-size: 1rem;
-            border: 1px solid #667eea;
-        }
-
-        .status {
-            background: #f7fafc;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 30px;
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-        }
-
-        .status-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 5px 10px;
-        }
-
-        .label {
-            color: #718096;
-            font-size: 0.9em;
-            margin-bottom: 5px;
-        }
-
-        .value {
-            color: #2d3748;
-            font-weight: bold;
-            font-size: 1.2em;
-        }
-
-        .progress {
-            background: #e2e8f0;
-            border-radius: 10px;
-            height: 30px;
-            margin-bottom: 30px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .progress-bar {
-            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-            height: 100%;
-            width: 0%;
-            transition: width 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-        }
-
-        .current-word {
-            text-align: center;
-            font-size: 2.2em;
-            font-weight: bold;
-            color: #2d3748;
-            margin: 40px 0;
-            min-height: 100px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            line-height: 1.2;
-        }
-
-        .starting {
-            text-align: center;
-            font-size: 1.5em;
-            color: #667eea;
-            margin: 40px 0;
-            min-height: 100px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .controls {
-            text-align: center;
-            margin-top: 30px;
-        }
-
-        button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            font-size: 1.2em;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: transform 0.2s;
-            margin: 5px;
-            box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
-        }
-
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
-        }
-
-        button:disabled {
-            background: #cbd5e0;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-
-        .preview {
-            margin-top: 30px;
-        }
-
-        .preview-list {
-            background: #f7fafc;
-            border-radius: 10px;
-            padding: 20px;
-            border: 1px dashed #cbd5e0;
-        }
-
-        .answers {
-            display: none;
-            margin-top: 30px;
-        }
-
-        .answers h2 {
-            color: #667eea;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .answer-list {
-            background: #f7fafc;
-            border-radius: 10px;
-            padding: 20px;
-        }
-
-        .answer-item {
-            padding: 12px;
-            margin-bottom: 8px;
-            background: white;
-            border-radius: 5px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-
-        .answer-left {
-            display: flex;
-            align-items: center;
-            flex: 1;
-        }
-
-        .answer-number {
-            color: #667eea;
-            font-weight: bold;
-            margin-right: 15px;
-            min-width: 30px;
-        }
-
-        .answer-text {
-            color: #2d3748;
-            font-size: 1.7em;
-            font-weight: 600;
-        }
-
-        .answer-meaning {
-            color: #718096;
-            font-size: 1.3em;
-            text-align: right;
-            margin-left: 10px;
-            flex: 1;
-        }
+        @keyframes popIn{0%{transform:scale(0.85);opacity:0}100%{transform:scale(1);opacity:1}}
+        @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+        .pop-in{animation:popIn 0.35s cubic-bezier(0.34,1.56,0.64,1) both;}
+        .shake{animation:shake 0.4s ease both;}
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🎧 Power Up 2 单元词汇听写</h1>
 
-        <div class="day-selector">
-            <select id="daySelect" onchange="loadDay()"></select>
+<!-- LOGIN -->
+<div id="screen-login" class="screen active">
+    <div class="login-hero">
+        <span class="emoji">🚀</span>
+        <h1>Power Up 闯关</h1>
+        <p>每天坚持，成为单词大师！</p>
+    </div>
+    <div id="iosTip" class="ios-tip">📱 <b>iPhone用户：</b>请关闭侧边静音键，调大媒体音量再开始。</div>
+    <div class="card">
+        <div id="existing-users-box" style="display:none">
+            <div class="user-list-title">本设备已有账号，点击直接进入：</div>
+            <div id="user-chips"></div>
+            <div class="divider"></div>
         </div>
+        <label>输入学号 ID</label>
+        <input type="text" id="login-id" placeholder="例如：S001" maxlength="20" onkeydown="if(event.key==='Enter') doLogin()">
+        <div style="font-size:0.78rem;color:var(--sub);margin:6px 0 14px;">首次输入学号会自动创建账号，数据保存在本设备。</div>
+        <button class="btn btn-primary" onclick="doLogin()">🎮 进入闯关</button>
+        <div id="login-error" style="color:#dc2626;font-size:0.85rem;margin-top:10px;text-align:center;display:none;"></div>
+    </div>
+</div>
 
+<!-- HOME -->
+<div id="screen-home" class="screen">
+    <div class="home-topbar">
+        <div class="stat-chip stat-streak"><div class="num" id="stat-streak">0</div><div class="lbl">🔥 坚持天数</div></div>
+        <div class="stat-chip stat-mastered" onclick="openScreen('screen-mastered')"><div class="num" id="stat-mastered">0</div><div class="lbl">⭐ 已掌握词</div></div>
+        <div class="stat-chip stat-error" onclick="openScreen('screen-errors')"><div class="num" id="stat-error">0</div><div class="lbl">📝 错题本</div></div>
+    </div>
+    <div class="greeting-bar">
+        <div>
+            <div class="greeting-name" id="greeting-name">Hi！</div>
+            <div class="greeting-sub" id="greeting-sub">今天也要加油哦！</div>
+        </div>
+        <button class="switch-user-btn" onclick="openScreen('screen-login')">切换账号</button>
+    </div>
+    <button class="review-quick-btn" id="review-quick-btn" onclick="startReviewDictation()">
+        <span class="rqb-left">🔥 练习错词</span>
+        <span class="rqb-count" id="review-quick-count">0个待练</span>
+    </button>
+    <div id="review-alert" class="review-alert">
+        <div class="review-alert-title">🎯 错误单词超过10个，建议先复习一下！</div>
+        <div class="review-alert-sub">点击下方按钮开始复习错词</div>
+        <button class="btn btn-accent" style="margin-top:10px;" onclick="startReviewDictation()">🔁 去复习错词</button>
+    </div>
+    <div class="card">
+        <div class="selector-row">
+            <select id="sel-grade" onchange="onGradeChange()"></select>
+            <select id="sel-unit"  onchange="onUnitChange()"></select>
+        </div>
         <div class="settings-row">
-            <div class="setting-group">
-                <label>语速:</label>
-                <select id="speechRate">
-                    <option value="1">正常</option>
-                    <option value="0.9">稍慢</option>
-                    <option value="0.8" selected>较慢</option>
-                    <option value="0.7">很慢</option>
-                </select>
+            <div class="setting-group"><label>🗣️ 语速</label>
+                <select id="set-rate"><option value="0.85">正常</option><option value="0.7" selected>稍慢</option><option value="0.55">较慢</option></select>
             </div>
-            <div class="setting-group">
-                <label>每词朗读:</label>
-                <select id="repeatCount">
-                    <option value="1">1次</option>
-                    <option value="2">2次</option>
-                    <option value="3" selected>3次</option>
-                </select>
+            <div class="setting-group"><label>🔁 次数</label>
+                <select id="set-repeat"><option value="1">1次</option><option value="2" selected>2次</option><option value="3">3次</option></select>
             </div>
-            <div class="setting-group">
-                <label>写字时长:</label>
-                <select id="waitTime">
-                    <option value="5">5秒</option>
-                    <option value="8">8秒</option>
-                    <option value="10" selected>10秒</option>
-                    <option value="12">12秒</option>
-                    <option value="15">15秒</option>
-                </select>
+            <div class="setting-group"><label>✍️ 书写</label>
+                <select id="set-wait"><option value="5">5秒</option><option value="8" selected>8秒</option><option value="10">10秒</option><option value="12">12秒</option></select>
+            </div>
+            <div class="setting-group"><label>🔀 顺序</label>
+                <select id="set-order"><option value="order" selected>顺序</option><option value="random">随机</option></select>
             </div>
         </div>
-
-        <div class="status">
-            <div class="status-item">
-                <span class="label">本组词数</span>
-                <span class="value" id="totalCount">0</span>
-            </div>
-            <div class="status-item">
-                <span class="label">当前进度</span>
-                <span class="value" id="currentProgress">0 / 0</span>
-            </div>
-        </div>
-
-        <div class="progress">
-            <div class="progress-bar" id="progressBar">0%</div>
-        </div>
-
-        <div class="current-word" id="currentWord" style="display: none;"></div>
-        <div class="starting" id="starting">准备开始...</div>
-
-        <div class="controls">
-            <button id="startBtn" onclick="startDictation()">开始听写</button>
-            <button id="pauseBtn" onclick="pauseDictation()" style="display: none;" disabled>暂停</button>
-            <button id="resumeBtn" onclick="resumeDictation()" style="display: none;">继续</button>
-            <button id="restartBtn" onclick="resetDictation()" style="display: none; background: #e53e3e;">重置</button>
-        </div>
-
-        <div class="preview" id="previewArea">
-            <div class="preview-list" id="previewList"></div>
-        </div>
-
-        <div class="answers" id="answers">
-            <h2>📝 听写答案</h2>
-            <div class="answer-list" id="answerList"></div>
+        <button class="btn btn-primary" onclick="startDictation()">🚀 开始听写</button>
+        <div class="preview-section">
+            <div class="divider"></div>
+            <div class="preview-label">📋 本单元单词预习</div>
+            <div class="preview-grid" id="preview-grid"></div>
         </div>
     </div>
+</div>
 
-    <script>
-        // 词汇数据 (基于 PU2指引单.pdf 整理)
-        const wordData = {
-            "Unit 1 Vocabulary 1 (Countryside)": [
-                { "text": "countryside", "meaning": "乡村" },
-                { "text": "mountain", "meaning": "山" },
-                { "text": "lake", "meaning": "湖" },
-                { "text": "river", "meaning": "河" },
-                { "text": "forest", "meaning": "森林" },
-                { "text": "ground", "meaning": "地" },
-                { "text": "grass", "meaning": "草" },
-                { "text": "leaf (leaves)", "meaning": "树叶 (复数)" },
-                { "text": "field", "meaning": "田地" },
-                { "text": "tractor", "meaning": "拖拉机" },
-                { "text": "rock", "meaning": "岩石, 大石头" },
-                { "text": "outside", "meaning": "在外面" }
-            ],
-            "Unit 1 Vocabulary 2 (Daily routines)": [
-                { "text": "get dressed", "meaning": "穿衣服" },
-                { "text": "wake up", "meaning": "醒醒" },
-                { "text": "get up", "meaning": "起床" },
-                { "text": "squeeze toothpaste on the toothbrush", "meaning": "把牙膏挤到牙刷上" },
-                { "text": "clean my teeth", "meaning": "清洗我的牙齿" },
-                { "text": "have a shower", "meaning": "洗个澡" },
-                { "text": "get my towel", "meaning": "拿上我的毛巾" },
-                { "text": "get dry", "meaning": "擦干/弄干" },
-                { "text": "sit down for breakfast", "meaning": "坐下来吃早饭" },
-                { "text": "daily routines", "meaning": "日常生活" },
-                { "text": "do my homework", "meaning": "做我的回家作业" },
-                { "text": "go to bed", "meaning": "去睡觉" },
-                { "text": "have breakfast/lunch/dinner", "meaning": "吃早/中/晚餐" },
-                { "text": "What time", "meaning": "几点?" }
-            ],
-            "Unit 2 Vocabulary 1 (Days of week)": [
-                { "text": "Sunday", "meaning": "周日" },
-                { "text": "Monday", "meaning": "周一" },
-                { "text": "Tuesday", "meaning": "周二" },
-                { "text": "Wednesday", "meaning": "周三" },
-                { "text": "Thursday", "meaning": "周四" },
-                { "text": "Friday", "meaning": "周五" },
-                { "text": "Saturday", "meaning": "周六" },
-                { "text": "favourite", "meaning": "最喜欢的" },
-                { "text": "towel", "meaning": "浴巾" },
-                { "text": "weekend", "meaning": "周末" },
-                { "text": "feed", "meaning": "喂养" },
-                { "text": "a week", "meaning": "一周" },
-                { "text": "come before", "meaning": "在...之前来临" },
-                { "text": "come after", "meaning": "在...之后来临" },
-                { "text": "a day", "meaning": "一天" },
-                { "text": "swimsuit", "meaning": "泳衣" },
-                { "text": "Maths", "meaning": "数学" }
-            ],
-            "Unit 2 Vocabulary 2 (Free time activities)": [
-                { "text": "listen to music", "meaning": "听音乐" },
-                { "text": "write an email", "meaning": "写一封电子邮件" },
-                { "text": "go skating", "meaning": "去溜冰" },
-                { "text": "read a comic", "meaning": "看漫画" },
-                { "text": "go shopping", "meaning": "去购物" },
-                { "text": "watch films", "meaning": "看电影" },
-                { "text": "Do you ever...?", "meaning": "你有没有..过?" },
-                { "text": "how often", "meaning": "多久一次" },
-                { "text": "watch a DVD", "meaning": "看DVD" },
-                { "text": "listen to a CD", "meaning": "听CD" }
-            ],
-            "Unit 3 Vocabulary 1 (Jobs and parties)": [
-                { "text": "surprise", "meaning": "惊喜的" },
-                { "text": "costume", "meaning": "服装" },
-                { "text": "party", "meaning": "派对" },
-                { "text": "clown", "meaning": "小丑" },
-                { "text": "film star", "meaning": "电影明星" },
-                { "text": "pop star", "meaning": "歌星" },
-                { "text": "treasure", "meaning": "金银财宝" },
-                { "text": "pirate", "meaning": "海盗" },
-                { "text": "cook", "meaning": "厨师" },
-                { "text": "nurse", "meaning": "护士" },
-                { "text": "dentist", "meaning": "牙科医生" },
-                { "text": "present", "meaning": "礼物" },
-                { "text": "doctor", "meaning": "医生" },
-                { "text": "farmer", "meaning": "农民" }
-            ],
-            "Unit 3 Vocabulary 2 (Physical descriptions)": [
-                { "text": "thin", "meaning": "瘦的, 细的" },
-                { "text": "tall", "meaning": "高的" },
-                { "text": "straight", "meaning": "直的" },
-                { "text": "blonde", "meaning": "金黄色的" },
-                { "text": "scarecrow", "meaning": "稻草人" },
-                { "text": "short", "meaning": "短的" },
-                { "text": "fat", "meaning": "胖的" },
-                { "text": "beard", "meaning": "胡须" },
-                { "text": "moustache", "meaning": "小胡子" },
-                { "text": "ugly", "meaning": "丑的" },
-                { "text": "a purple nose", "meaning": "一个紫色的鼻子" },
-                { "text": "fair", "meaning": "白皙的/金黄色的" },
-                { "text": "curly", "meaning": "卷曲的" },
-                { "text": "dirty clothes", "meaning": "脏衣服" }
-            ],
-            "Unit 4 Vocabulary 1 (Extended family)": [
-                { "text": "a family photo", "meaning": "一张全家福" },
-                { "text": "grown-ups", "meaning": "成年人" },
-                { "text": "behind", "meaning": "在后面" },
-                { "text": "parents", "meaning": "双亲" },
-                { "text": "daughter", "meaning": "女儿" },
-                { "text": "uncle", "meaning": "叔叔" },
-                { "text": "son", "meaning": "儿子" },
-                { "text": "cousin", "meaning": "表弟/哥/姐/妹" },
-                { "text": "aunt", "meaning": "阿姨" },
-                { "text": "grandparents", "meaning": "祖父母" },
-                { "text": "granddaughter", "meaning": "孙女" },
-                { "text": "grandson", "meaning": "孙子" }
-            ],
-            "Unit 4 Vocabulary 2 (In and around the home)": [
-                { "text": "in the town centre", "meaning": "在小镇中心" },
-                { "text": "on the third floor", "meaning": "在三楼" },
-                { "text": "plant on his balcony", "meaning": "在阳台上种植植物" },
-                { "text": "on the roof", "meaning": "在房顶上" },
-                { "text": "in the basement", "meaning": "在地下室" },
-                { "text": "go up and down", "meaning": "上升和下降" },
-                { "text": "in the centre of town", "meaning": "在小镇中心" },
-                { "text": "in the small village", "meaning": "在那个小村庄里" },
-                { "text": "a village outside town", "meaning": "小镇外的一个村庄" },
-                { "text": "inside our house", "meaning": "在我们的房子里" },
-                { "text": "upstairs", "meaning": "在楼上" },
-                { "text": "downstairs", "meaning": "在楼下" }
-            ],
-            "Unit 5 Vocabulary 1 (Wild and domestic animals)": [
-                { "text": "in a wildlife park", "meaning": "在一个野生动物园" },
-                { "text": "bear", "meaning": "熊" },
-                { "text": "bat", "meaning": "球棒/蝙蝠" },
-                { "text": "parrot", "meaning": "鹦鹉" },
-                { "text": "rabbit", "meaning": "兔子" },
-                { "text": "kangaroo", "meaning": "袋鼠" },
-                { "text": "panda", "meaning": "熊猫" },
-                { "text": "lion", "meaning": "狮子" },
-                { "text": "in the afternoon", "meaning": "在下午" },
-                { "text": "cage", "meaning": "笼子" },
-                { "text": "whale", "meaning": "鲸" },
-                { "text": "dolphin", "meaning": "海豚" },
-                { "text": "penguin", "meaning": "企鹅" }
-            ],
-            "Unit 5 Vocabulary 2 (Action verbs)": [
-                { "text": "our masks", "meaning": "我们的面具" },
-                { "text": "move like wild animals", "meaning": "像野生动物一样移动" },
-                { "text": "run like a lion", "meaning": "像一只狮子一样奔跑" },
-                { "text": "climb like a kangaroo", "meaning": "像袋鼠一样攀登" },
-                { "text": "hide", "meaning": "躲藏" },
-                { "text": "like to fly", "meaning": "喜欢飞" },
-                { "text": "lose banana", "meaning": "失去香蕉" },
-                { "text": "fall in the sky", "meaning": "在天空中坠落" },
-                { "text": "jump like a rabbit", "meaning": "像兔子一样跳跃" },
-                { "text": "fly like a bat", "meaning": "像蝙蝠一样飞行" },
-                { "text": "is/am/are slow", "meaning": "慢的" },
-                { "text": "move like a snail", "meaning": "像蜗牛一样爬行" },
-                { "text": "walk like a penguin", "meaning": "像企鹅一样行走" }
-            ],
-            "Unit 6 Vocabulary 1 (The weather)": [
-                { "text": "make a video call", "meaning": "视频通话" },
-                { "text": "wind", "meaning": "风" },
-                { "text": "windy", "meaning": "有风的" },
-                { "text": "cloud", "meaning": "云" },
-                { "text": "cloudy", "meaning": "多云的" },
-                { "text": "rainbow", "meaning": "彩虹" },
-                { "text": "hot", "meaning": "热的" },
-                { "text": "rain", "meaning": "雨" },
-                { "text": "rainy", "meaning": "下雨的/多雨的" },
-                { "text": "cold", "meaning": "冷的" },
-                { "text": "sun", "meaning": "太阳" },
-                { "text": "sunny", "meaning": "晴朗的" },
-                { "text": "snow", "meaning": "雪" },
-                { "text": "snowy", "meaning": "下雪的/多雪的" }
-            ],
-            "Unit 6 Vocabulary 2 (Clothes)": [
-                { "text": "put on your T-shirt", "meaning": "穿上你的T恤" },
-                { "text": "go out to play", "meaning": "出去玩" },
-                { "text": "sweater", "meaning": "毛衣" },
-                { "text": "scarf", "meaning": "围巾" },
-                { "text": "coat", "meaning": "外套" },
-                { "text": "boots", "meaning": "长筒靴" },
-                { "text": "come inside", "meaning": "到里面" },
-                { "text": "near the fire", "meaning": "在火旁" },
-                { "text": "take off your coat", "meaning": "脱下你的外套" },
-                { "text": "sit on that chair", "meaning": "坐在椅子上" }
-            ],
-            "Unit 7 Vocabulary 1 (Food)": [
-                { "text": "a cooking class", "meaning": "一节烹饪课" },
-                { "text": "cup", "meaning": "杯具" },
-                { "text": "soup", "meaning": "汤" },
-                { "text": "plate", "meaning": "盘子" },
-                { "text": "pasta", "meaning": "意大利面" },
-                { "text": "bottle", "meaning": "瓶子" },
-                { "text": "bring the food home", "meaning": "把食物带回家" },
-                { "text": "ate it all", "meaning": "吃掉所有" },
-                { "text": "drank hot chocolate", "meaning": "喝热巧克力" },
-                { "text": "saw them", "meaning": "看他们" },
-                { "text": "made a pasta salad", "meaning": "做一个意大利面沙拉" },
-                { "text": "only got vegetables", "meaning": "只有蔬菜" },
-                { "text": "glass", "meaning": "玻璃杯" },
-                { "text": "salad", "meaning": "沙拉" },
-                { "text": "bowl", "meaning": "碗" },
-                { "text": "cheese", "meaning": "芝士" },
-                { "text": "sandwich", "meaning": "三明治" },
-                { "text": "vegetable", "meaning": "蔬菜" }
-            ],
-            "Unit 7 Vocabulary 2 (Actions in the kitchen)": [
-                { "text": "cook the dinner", "meaning": "做晚饭" },
-                { "text": "wear hats", "meaning": "戴帽子" },
-                { "text": "wash the glasses", "meaning": "洗玻璃杯" },
-                { "text": "carry the plates", "meaning": "拿盘子" },
-                { "text": "drop the bowl", "meaning": "放下碗" },
-                { "text": "mustn't be late", "meaning": "禁止迟到" },
-                { "text": "boil the pasta", "meaning": "煮意大利面" },
-                { "text": "fry the fish", "meaning": "用油煎鱼" },
-                { "text": "start the dinner", "meaning": "开始晚餐" },
-                { "text": "stop crying", "meaning": "停止哭泣" },
-                { "text": "don't cry", "meaning": "别哭" },
-                { "text": "cut the onions", "meaning": "切洋葱" },
-                { "text": "all right", "meaning": "好的" }
-            ],
-            "Unit 8 Vocabulary 1 (A day trip)": [
-                { "text": "plan a trip", "meaning": "计划一个旅行" },
-                { "text": "ride", "meaning": "乘骑设施" },
-                { "text": "map", "meaning": "地图" },
-                { "text": "funfair", "meaning": "游乐场" },
-                { "text": "city centre", "meaning": "城市中心" },
-                { "text": "station", "meaning": "车站" },
-                { "text": "road", "meaning": "路" },
-                { "text": "car park", "meaning": "停车场" },
-                { "text": "ticket", "meaning": "票" }
-            ],
-            "Unit 8 Vocabulary 2 (Places in town)": [
-                { "text": "last week", "meaning": "上周" },
-                { "text": "did a lot of things", "meaning": "做许多事" },
-                { "text": "sat in the café", "meaning": "坐在咖啡馆里" },
-                { "text": "in the pretty square", "meaning": "在美丽的广场上" },
-                { "text": "saw a film", "meaning": "看电影" },
-                { "text": "at the cinema", "meaning": "在电影院" },
-                { "text": "got a book from the library", "meaning": "从图书馆得来一本书" },
-                { "text": "in the hospital", "meaning": "在医院" },
-                { "text": "chose some clothes", "meaning": "选择一些衣服" },
-                { "text": "at the shopping centre", "meaning": "在购物中心" },
-                { "text": "bought some food", "meaning": "买一些食物" },
-                { "text": "at the supermarket", "meaning": "在超市" },
-                { "text": "played tennis", "meaning": "打网球" },
-                { "text": "at the sports centre", "meaning": "在运动中心" },
-                { "text": "went for a swim", "meaning": "去游泳" },
-                { "text": "at the swimming pool", "meaning": "在游泳池里" },
-                { "text": "bought some vegetables", "meaning": "买一些蔬菜" },
-                { "text": "at the market", "meaning": "在市场" },
-                { "text": "caught a bus home", "meaning": "乘公共汽车回家" },
-                { "text": "bus station", "meaning": "公交车站" }
-            ],
-            "Unit 9 Vocabulary 1 (Adjectives for opinions)": [
-                { "text": "a day trip", "meaning": "一日之旅" },
-                { "text": "She's really surprised.", "meaning": "她真的很惊讶。" },
-                { "text": "He's frightened.", "meaning": "他很害怕。" },
-                { "text": "It's dangerous.", "meaning": "它很危险。" },
-                { "text": "It's difficult to catch someone.", "meaning": "要抓到一个人很难。" },
-                { "text": "It isn't easy.", "meaning": "它不简单。" },
-                { "text": "I'm hungry.", "meaning": "我饿了。" },
-                { "text": "The circus is exciting.", "meaning": "这个马戏团表演很刺激。" },
-                { "text": "It isn't boring.", "meaning": "它不无聊。" },
-                { "text": "I'm afraid.", "meaning": "我很害怕。" },
-                { "text": "I'm tired.", "meaning": "我累了。" },
-                { "text": "Is everyone thirsty?", "meaning": "每个人口渴吗?" }
-            ],
-            "Unit 9 Vocabulary 2 (A new adventure)": [
-                { "text": "email", "meaning": "邮件" },
-                { "text": "DVD", "meaning": "数字化视频光盘" },
-                { "text": "job", "meaning": "职业" },
-                { "text": "go on an adventure", "meaning": "去冒险" },
-                { "text": "apartment", "meaning": "公寓" },
-                { "text": "A world tour!", "meaning": "世界之旅!" },
-                { "text": "Call/Text our family.", "meaning": "给我们家打电话/发短信。" },
-                { "text": "Email our friends.", "meaning": "给我们的朋友发邮件。" },
-                { "text": "get busy", "meaning": "忙起来" },
-                { "text": "book", "meaning": "书" },
-                { "text": "blanket", "meaning": "毯子" },
-                { "text": "An exciting trip!", "meaning": "多么刺激的旅行!" }
-            ]
-        };
+<!-- RUNNING -->
+<div id="screen-running" class="screen">
+    <div class="card">
+        <div class="run-header"><span class="run-unit-badge" id="run-unit-name">Unit</span></div>
+        <div class="progress-wrap">
+            <div class="progress-bar"><div class="progress-fill" id="run-progress-fill"></div></div>
+            <div class="progress-text" id="run-progress-text">0 / 0</div>
+        </div>
+        <div class="word-stage">
+            <div class="word-ordinal" id="run-ordinal">第 1 个</div>
+            <div class="big-word" id="run-word">Ready</div>
+            <div class="status-msg" id="run-status">准备中...</div>
+            <div class="countdown-ring" id="countdown-wrap" style="display:none">
+                <svg viewBox="0 0 54 54">
+                    <circle cx="27" cy="27" r="22"/>
+                    <circle class="arc" id="countdown-arc" cx="27" cy="27" r="22" stroke-dasharray="138.2" stroke-dashoffset="0"/>
+                </svg>
+                <div class="countdown-num" id="countdown-num">8</div>
+            </div>
+        </div>
+        <div class="run-btns">
+            <button class="run-btn run-btn-pause" id="pause-btn" onclick="togglePause()">⏸ 暂停</button>
+            <button class="run-btn run-btn-stop" onclick="stopDictation()">⏹ 结束</button>
+        </div>
+    </div>
+</div>
 
-        let currentDayWords = [];
-        let currentIndex = 0;
-        let isPaused = false;
-        let isRunning = false;
+<!-- RESULT -->
+<div id="screen-result" class="screen">
+    <div class="card">
+        <div class="result-hero">
+            <div class="result-star" id="result-star">🌟</div>
+            <div class="result-title">听写完成！</div>
+            <div class="result-score" id="result-score">0分</div>
+            <div class="result-streak" id="result-streak"></div>
+        </div>
+        <div class="result-encourage" id="result-encourage">加油！继续坚持！</div>
+        <div class="result-summary">
+            <span class="summary-chip badge-green" id="sum-correct">✅ 0 个全对</span>
+            <span class="summary-chip badge-red" id="sum-wrong">❌ 0 个错误</span>
+        </div>
+        <div class="divider"></div>
+        <div style="font-weight:700;color:#4338ca;font-size:0.85rem;margin-bottom:6px;">📋 核对答案（点击打错）</div>
+        <div class="answer-check-grid" id="answer-check-grid"></div>
+        <div style="height:16px"></div>
+        <button class="btn btn-primary" onclick="submitResult()">✅ 提交结果</button>
+        <div style="height:10px"></div>
+        <button class="btn" style="background:#f0f0f8;color:#4338ca;padding:12px;width:100%;font-size:0.95rem;font-weight:700;" onclick="openScreen('screen-home')">🏠 返回主页</button>
+    </div>
+</div>
 
-        window.onload = function() {
-            initDaySelector();
-            loadDay();
-        };
+<!-- MASTERED -->
+<div id="screen-mastered" class="screen">
+    <div class="card">
+        <div class="page-header"><div class="page-title">⭐ 已掌握单词</div><button class="back-btn" onclick="openScreen('screen-home')">返回</button></div>
+        <div id="mastered-content"></div>
+    </div>
+</div>
 
-        function initDaySelector() {
-            const select = document.getElementById('daySelect');
-            const keys = Object.keys(wordData);
-            
-            keys.forEach(key => {
-                const option = document.createElement('option');
-                option.value = key;
-                option.text = key + ` (${wordData[key].length} words)`;
-                select.appendChild(option);
-            });
-        }
+<!-- ERRORS -->
+<div id="screen-errors" class="screen">
+    <div class="card">
+        <div class="page-header"><div class="page-title">📝 错题本</div><button class="back-btn" onclick="openScreen('screen-home')">返回</button></div>
+        <div id="errors-content"></div>
+        <div style="height:12px"></div>
+        <button class="btn btn-accent" id="error-review-btn" onclick="startReviewDictation()" style="display:none;">🔁 开始复习错词</button>
+    </div>
+</div>
 
-        function loadDay() {
-            if (isRunning) {
-                alert("请先停止当前听写再切换天数！");
-                const previousKey = Object.keys(wordData).find(key => wordData[key] === currentDayWords);
-                if (previousKey) document.getElementById('daySelect').value = previousKey;
-                return;
-            }
-            
-            const selectedDay = document.getElementById('daySelect').value;
-            currentDayWords = wordData[selectedDay];
-            
-            document.getElementById('totalCount').textContent = currentDayWords.length;
-            document.getElementById('currentProgress').textContent = `0 / ${currentDayWords.length}`;
-            document.getElementById('progressBar').style.width = '0%';
-            document.getElementById('progressBar').textContent = '0%';
-            
-            resetUI();
-            renderPreview();
-        }
+<script>
+window.onerror = function(msg,src,line){console.error('JS Error line '+line+': '+msg);};
 
-        function renderPreview() {
-            const list = document.getElementById('previewList');
-            list.innerHTML = '';
-            currentDayWords.forEach((word, index) => {
-                const item = document.createElement('div');
-                item.className = 'answer-item';
-                item.innerHTML = `
-                    <div class="answer-left">
-                        <span class="answer-number">${index + 1}.</span>
-                        <span class="answer-text">${word.text}</span>
-                    </div>
-                    <span class="answer-meaning">${word.meaning}</span>
-                `;
-                list.appendChild(item);
-            });
-        }
+const TEXTBOOK_DATA = {
+    "PU2": {
+        gradeLabel: "Power Up 2",
+        units: [
+            { name:"Unit 1 V1 - Countryside", words:[
+                {w:"countryside",cn:"乡村"},{w:"mountain",cn:"山"},{w:"lake",cn:"湖"},{w:"river",cn:"河"},
+                {w:"forest",cn:"森林"},{w:"ground",cn:"地"},{w:"grass",cn:"草"},{w:"leaf (leaves)",cn:"树叶（复数）"},
+                {w:"field",cn:"田地"},{w:"tractor",cn:"拖拉机"},{w:"rock",cn:"岩石，大石头"},{w:"outside",cn:"在外面"}
+            ]},
+            { name:"Unit 1 V2 - Daily Routines", words:[
+                {w:"get dressed",cn:"穿衣服"},{w:"wake up",cn:"醒来"},{w:"get up",cn:"起床"},
+                {w:"squeeze toothpaste on the toothbrush",cn:"把牙膏挤到牙刷上"},
+                {w:"clean my teeth",cn:"清洗我的牙齿"},{w:"have a shower",cn:"洗个澡"},
+                {w:"get my towel",cn:"拿上我的毛巾"},{w:"get dry",cn:"擦干/弄干"},
+                {w:"sit down for breakfast",cn:"坐下来吃早饭"},{w:"daily routines",cn:"日常生活"},
+                {w:"do my homework",cn:"做我的回家作业"},{w:"go to bed",cn:"去睡觉"},
+                {w:"have breakfast/lunch/dinner",cn:"吃早/中/晚餐"},{w:"What time",cn:"几点?"}
+            ]},
+            { name:"Unit 2 V1 - Days of Week", words:[
+                {w:"Sunday",cn:"周日"},{w:"Monday",cn:"周一"},{w:"Tuesday",cn:"周二"},
+                {w:"Wednesday",cn:"周三"},{w:"Thursday",cn:"周四"},{w:"Friday",cn:"周五"},
+                {w:"Saturday",cn:"周六"},{w:"favourite",cn:"最喜欢的"},{w:"towel",cn:"浴巾"},
+                {w:"weekend",cn:"周末"},{w:"feed",cn:"喂养"},{w:"a week",cn:"一周"},
+                {w:"come before",cn:"在...之前来临"},{w:"come after",cn:"在...之后来临"},
+                {w:"a day",cn:"一天"},{w:"swimsuit",cn:"泳衣"},{w:"Maths",cn:"数学"}
+            ]},
+            { name:"Unit 2 V2 - Free Time Activities", words:[
+                {w:"listen to music",cn:"听音乐"},{w:"write an email",cn:"写一封电子邮件"},
+                {w:"go skating",cn:"去溜冰"},{w:"read a comic",cn:"看漫画"},
+                {w:"go shopping",cn:"去购物"},{w:"watch films",cn:"看电影"},
+                {w:"Do you ever...?",cn:"你有没有...过?"},{w:"how often",cn:"多久一次"},
+                {w:"watch a DVD",cn:"看DVD"},{w:"listen to a CD",cn:"听CD"}
+            ]},
+            { name:"Unit 3 V1 - Jobs and Parties", words:[
+                {w:"surprise",cn:"惊喜的"},{w:"costume",cn:"服装"},{w:"party",cn:"派对"},
+                {w:"clown",cn:"小丑"},{w:"film star",cn:"电影明星"},{w:"pop star",cn:"歌星"},
+                {w:"treasure",cn:"金银财宝"},{w:"pirate",cn:"海盗"},{w:"cook",cn:"厨师"},
+                {w:"nurse",cn:"护士"},{w:"dentist",cn:"牙科医生"},{w:"present",cn:"礼物"},
+                {w:"doctor",cn:"医生"},{w:"farmer",cn:"农民"}
+            ]},
+            { name:"Unit 3 V2 - Physical Descriptions", words:[
+                {w:"thin",cn:"瘦的，细的"},{w:"tall",cn:"高的"},{w:"straight",cn:"直的"},
+                {w:"blonde",cn:"金黄色的"},{w:"scarecrow",cn:"稻草人"},{w:"short",cn:"短的"},
+                {w:"fat",cn:"胖的"},{w:"beard",cn:"胡须"},{w:"moustache",cn:"小胡子"},
+                {w:"ugly",cn:"丑的"},{w:"a purple nose",cn:"一个紫色的鼻子"},
+                {w:"fair",cn:"白皙的/金黄色的"},{w:"curly",cn:"卷曲的"},{w:"dirty clothes",cn:"脏衣服"}
+            ]},
+            { name:"Unit 4 V1 - Extended Family", words:[
+                {w:"a family photo",cn:"一张全家福"},{w:"grown-ups",cn:"成年人"},{w:"behind",cn:"在后面"},
+                {w:"parents",cn:"双亲"},{w:"daughter",cn:"女儿"},{w:"uncle",cn:"叔叔"},
+                {w:"son",cn:"儿子"},{w:"cousin",cn:"表弟/哥/姐/妹"},{w:"aunt",cn:"阿姨"},
+                {w:"grandparents",cn:"祖父母"},{w:"granddaughter",cn:"孙女"},{w:"grandson",cn:"孙子"}
+            ]},
+            { name:"Unit 4 V2 - In and Around Home", words:[
+                {w:"in the town centre",cn:"在小镇中心"},{w:"on the third floor",cn:"在三楼"},
+                {w:"plant on his balcony",cn:"在阳台上种植植物"},{w:"on the roof",cn:"在房顶上"},
+                {w:"in the basement",cn:"在地下室"},{w:"go up and down",cn:"上升和下降"},
+                {w:"inside our house",cn:"在我们的房子里"},{w:"in the small village",cn:"在那个小村庄里"},
+                {w:"a village outside town",cn:"小镇外的一个村庄"},{w:"upstairs",cn:"在楼上"},{w:"downstairs",cn:"在楼下"}
+            ]},
+            { name:"Unit 5 V1 - Animals", words:[
+                {w:"in a wildlife park",cn:"在一个野生动物园"},{w:"bear",cn:"熊"},{w:"bat",cn:"球棒/蝙蝠"},
+                {w:"parrot",cn:"鹦鹉"},{w:"rabbit",cn:"兔子"},{w:"kangaroo",cn:"袋鼠"},
+                {w:"panda",cn:"熊猫"},{w:"lion",cn:"狮子"},{w:"in the afternoon",cn:"在下午"},
+                {w:"cage",cn:"笼子"},{w:"whale",cn:"鲸"},{w:"dolphin",cn:"海豚"},{w:"penguin",cn:"企鹅"}
+            ]},
+            { name:"Unit 5 V2 - Action Verbs", words:[
+                {w:"our masks",cn:"我们的面具"},{w:"move like wild animals",cn:"像野生动物一样移动"},
+                {w:"run like a lion",cn:"像一只狮子一样奔跑"},{w:"climb like a kangaroo",cn:"像袋鼠一样攀登"},
+                {w:"hide",cn:"躲藏"},{w:"like to fly",cn:"喜欢飞"},{w:"lose banana",cn:"失去香蕉"},
+                {w:"fall in the sky",cn:"在天空中坠落"},{w:"jump like a rabbit",cn:"像兔子一样跳跃"},
+                {w:"fly like a bat",cn:"像蝙蝠一样飞行"},{w:"is/am/are slow",cn:"慢的"},
+                {w:"move like a snail",cn:"像蜗牛一样爬行"},{w:"walk like a penguin",cn:"像企鹅一样行走"}
+            ]},
+            { name:"Unit 6 V1 - The Weather", words:[
+                {w:"make a video call",cn:"视频通话"},{w:"wind",cn:"风"},{w:"windy",cn:"有风的"},
+                {w:"cloud",cn:"云"},{w:"cloudy",cn:"多云的"},{w:"rainbow",cn:"彩虹"},
+                {w:"hot",cn:"热的"},{w:"rain",cn:"雨"},{w:"rainy",cn:"下雨的/多雨的"},
+                {w:"cold",cn:"冷的"},{w:"sun",cn:"太阳"},{w:"sunny",cn:"晴朗的"},
+                {w:"snow",cn:"雪"},{w:"snowy",cn:"下雪的/多雪的"}
+            ]},
+            { name:"Unit 6 V2 - Clothes", words:[
+                {w:"put on your T-shirt",cn:"穿上你的T恤"},{w:"go out to play",cn:"出去玩"},
+                {w:"sweater",cn:"毛衣"},{w:"scarf",cn:"围巾"},{w:"coat",cn:"外套"},
+                {w:"boots",cn:"长筒靴"},{w:"come inside",cn:"到里面"},{w:"near the fire",cn:"在火旁"},
+                {w:"take off your coat",cn:"脱下你的外套"},{w:"sit on that chair",cn:"坐在椅子上"}
+            ]},
+            { name:"Unit 7 V1 - Food", words:[
+                {w:"a cooking class",cn:"一节烹饪课"},{w:"cup",cn:"杯具"},{w:"soup",cn:"汤"},
+                {w:"plate",cn:"盘子"},{w:"pasta",cn:"意大利面"},{w:"bottle",cn:"瓶子"},
+                {w:"bring the food home",cn:"把食物带回家"},{w:"ate it all",cn:"吃掉所有"},
+                {w:"drank hot chocolate",cn:"喝热巧克力"},{w:"glass",cn:"玻璃杯"},
+                {w:"salad",cn:"沙拉"},{w:"bowl",cn:"碗"},{w:"cheese",cn:"芝士"},
+                {w:"sandwich",cn:"三明治"},{w:"vegetable",cn:"蔬菜"}
+            ]},
+            { name:"Unit 7 V2 - Actions in Kitchen", words:[
+                {w:"cook the dinner",cn:"做晚饭"},{w:"wear hats",cn:"戴帽子"},
+                {w:"wash the glasses",cn:"洗玻璃杯"},{w:"carry the plates",cn:"拿盘子"},
+                {w:"drop the bowl",cn:"放下碗"},{w:"mustn't be late",cn:"禁止迟到"},
+                {w:"boil the pasta",cn:"煮意大利面"},{w:"fry the fish",cn:"用油煎鱼"},
+                {w:"stop crying",cn:"停止哭泣"},{w:"don't cry",cn:"别哭"},
+                {w:"cut the onions",cn:"切洋葱"},{w:"all right",cn:"好的"}
+            ]},
+            { name:"Unit 8 V1 - A Day Trip", words:[
+                {w:"plan a trip",cn:"计划一个旅行"},{w:"ride",cn:"乘骑设施"},{w:"map",cn:"地图"},
+                {w:"funfair",cn:"游乐场"},{w:"city centre",cn:"城市中心"},{w:"station",cn:"车站"},
+                {w:"road",cn:"路"},{w:"car park",cn:"停车场"},{w:"ticket",cn:"票"}
+            ]},
+            { name:"Unit 8 V2 - Places in Town", words:[
+                {w:"last week",cn:"上周"},{w:"sat in the café",cn:"坐在咖啡馆里"},
+                {w:"saw a film",cn:"看电影"},{w:"at the cinema",cn:"在电影院"},
+                {w:"got a book from the library",cn:"从图书馆得来一本书"},{w:"in the hospital",cn:"在医院"},
+                {w:"at the shopping centre",cn:"在购物中心"},{w:"bought some food",cn:"买一些食物"},
+                {w:"at the supermarket",cn:"在超市"},{w:"played tennis",cn:"打网球"},
+                {w:"at the sports centre",cn:"在运动中心"},{w:"went for a swim",cn:"去游泳"},
+                {w:"at the swimming pool",cn:"在游泳池里"},{w:"bought some vegetables",cn:"买一些蔬菜"},
+                {w:"at the market",cn:"在市场"},{w:"caught a bus home",cn:"乘公共汽车回家"},
+                {w:"bus station",cn:"公交车站"}
+            ]},
+            { name:"Unit 9 V1 - Adjectives for Opinions", words:[
+                {w:"a day trip",cn:"一日之旅"},{w:"She's really surprised.",cn:"她真的很惊讶。"},
+                {w:"He's frightened.",cn:"他很害怕。"},{w:"It's dangerous.",cn:"它很危险。"},
+                {w:"It isn't easy.",cn:"它不简单。"},{w:"I'm hungry.",cn:"我饿了。"},
+                {w:"The circus is exciting.",cn:"这个马戏团表演很刺激。"},{w:"It isn't boring.",cn:"它不无聊。"},
+                {w:"I'm afraid.",cn:"我很害怕。"},{w:"I'm tired.",cn:"我累了。"},
+                {w:"Is everyone thirsty?",cn:"每个人口渴吗?"}
+            ]},
+            { name:"Unit 9 V2 - A New Adventure", words:[
+                {w:"email",cn:"邮件"},{w:"DVD",cn:"数字化视频光盘"},{w:"job",cn:"职业"},
+                {w:"go on an adventure",cn:"去冒险"},{w:"apartment",cn:"公寓"},
+                {w:"A world tour!",cn:"世界之旅!"},{w:"Call/Text our family.",cn:"给我们家打电话/发短信。"},
+                {w:"Email our friends.",cn:"给我们的朋友发邮件。"},{w:"get busy",cn:"忙起来"},
+                {w:"book",cn:"书"},{w:"blanket",cn:"毯子"},{w:"An exciting trip!",cn:"多么刺激的旅行!"}
+            ]}
+        ]
+    },
+    "PU3": {
+        gradeLabel: "Power Up 3",
+        units: [
+            { name:"Unit 1 词汇1 - Meal Times", words:[
+                {w:"in Russia",cn:"在俄罗斯"},{w:"talk about meals",cn:"谈论食物"},
+                {w:"meal times",cn:"用餐时间"},{w:"half past twelve",cn:"12点半"},
+                {w:"seven o'clock",cn:"7点钟"},{w:"midnight",cn:"午夜"},
+                {w:"half past six",cn:"6点半"},{w:"half past eight",cn:"8点半"},
+                {w:"eight o'clock",cn:"8点钟"},{w:"half past nine",cn:"9点半"},
+                {w:"midday",cn:"正午"},{w:"What time is it?",cn:"现在几点?"},
+                {w:"It's half past twelve.",cn:"现在是12点半。"},
+                {w:"breakfast",cn:"早餐"},{w:"a snack",cn:"一顿小吃"},
+                {w:"lunch",cn:"午餐"},{w:"dinner",cn:"晚餐"},
+                {w:"wake up",cn:"起床"},{w:"go to bed",cn:"去睡觉"}
+            ]},
+            { name:"Unit 1 词汇2 - Action Verbs", words:[
+                {w:"catch",cn:"抓住"},{w:"hop",cn:"单脚跳"},{w:"skip",cn:"跳绳"},{w:"dance",cn:"跳舞"},
+                {w:"jump to your places",cn:"跳到你的位置"},{w:"practice time",cn:"练习时间"},
+                {w:"Are you in or out?",cn:"你是加入还是退出?"},{w:"be quiet",cn:"保持安静"},
+                {w:"mustn't shout",cn:"禁止大叫"},{w:"don't laugh",cn:"不要笑"},
+                {w:"with a smile on your face",cn:"面带微笑"},{w:"hold her legs",cn:"抓住她的腿"},
+                {w:"fall into the net",cn:"落入网中"},{w:"dress up",cn:"打扮"},
+                {w:"jump",cn:"跳"},{w:"climb",cn:"攀登"}
+            ]},
+            { name:"Unit 2 词汇1 - Food & Drinks", words:[
+                {w:"in China",cn:"在中国"},{w:"shop for food",cn:"买食物"},
+                {w:"tea",cn:"茶"},{w:"cup",cn:"杯"},{w:"coffee",cn:"咖啡"},
+                {w:"milkshake",cn:"奶昔"},{w:"glass",cn:"杯"},{w:"cereal",cn:"谷物食物"},
+                {w:"sauce",cn:"酱"},{w:"pancake",cn:"薄煎饼"},{w:"noodles",cn:"面条"},
+                {w:"strawberries",cn:"草莓"},{w:"yogurt",cn:"酸奶"},
+                {w:"a glass of milkshake",cn:"一杯奶昔"},{w:"a cup of coffee",cn:"一杯咖啡"},
+                {w:"a bottle of chocolate sauce",cn:"一瓶巧克力酱"},
+                {w:"a bowl of cereal",cn:"一碗谷物食物"}
+            ]},
+            { name:"Unit 2 词汇2 - Past Tense Verbs", words:[
+                {w:"drove (drive) to town",cn:"开车去城镇"},
+                {w:"the place where May grew (grow) up",cn:"May 长大的地方"},
+                {w:"the teacher who taught (teach) her",cn:"教过她的老师"},
+                {w:"got (get) dressed up",cn:"穿衣打扮"},
+                {w:"took (take) some photos",cn:"拍一些照片"},
+                {w:"gave (give)",cn:"给"},{w:"climbed (climb)",cn:"攀登"},
+                {w:"wrote (write) this song",cn:"写这首歌"}
+            ]},
+            { name:"Unit 3 词汇1 - Body Parts", words:[
+                {w:"do exercise",cn:"做训练"},{w:"on the beach",cn:"在海滩上"},
+                {w:"bandage",cn:"绷带"},{w:"knee",cn:"膝盖"},{w:"stomach",cn:"胃"},
+                {w:"shoulder",cn:"肩膀"},{w:"neck",cn:"脖子"},{w:"toe",cn:"脚趾"},
+                {w:"finger",cn:"手指"},{w:"elbow",cn:"肘部"},{w:"back",cn:"背部"}
+            ]},
+            { name:"Unit 3 词汇2 - Illness & Health", words:[
+                {w:"is/am/are sick",cn:"生病了"},{w:"is/am/are ill",cn:"不舒服"},
+                {w:"be quick",cn:"快点"},{w:"What's the problem?",cn:"什么问题?"},
+                {w:"What's the matter?",cn:"怎么了?"},
+                {w:"have/has got a cough",cn:"咳嗽"},{w:"have/has got a temperature",cn:"发烧"},
+                {w:"have/has got sore throat",cn:"喉咙痛"},{w:"have/has got a cold",cn:"感冒"},
+                {w:"have/has got a backache",cn:"背痛"},{w:"My stomach hurts.",cn:"我的胃痛。"}
+            ]},
+            { name:"Unit 4 词汇1 - Nature", words:[
+                {w:"in India",cn:"在印度"},{w:"star",cn:"星星"},{w:"jungle",cn:"丛林"},
+                {w:"world",cn:"世界"},{w:"waterfall",cn:"瀑布"},{w:"moon",cn:"月亮"},
+                {w:"sky",cn:"天空"},{w:"plant",cn:"植物"},{w:"wave",cn:"海浪"},{w:"island",cn:"岛"}
+            ]},
+            { name:"Unit 4 词汇2 - Past Tense Actions", words:[
+                {w:"drove (drive) to the beach",cn:"开车去海滩"},
+                {w:"sailed (sail) on the sea",cn:"在海上航行"},
+                {w:"threw (throw) our nets",cn:"扔我们的网"},
+                {w:"caught (catch) some fish",cn:"抓些鱼"},
+                {w:"bounced (bounce)",cn:"弹跳"},{w:"hopped (hop)",cn:"单脚跳行"},
+                {w:"skipped (skip)",cn:"跳绳"},{w:"kicked (kick)",cn:"踢"}
+            ]},
+            { name:"Unit 5 词汇1 - Colours & Patterns", words:[
+                {w:"in Greece",cn:"在希腊"},{w:"wing",cn:"翅膀"},{w:"striped",cn:"有条纹的"},
+                {w:"spotted",cn:"有斑点的"},{w:"silver",cn:"银色的"},{w:"bright",cn:"明亮的"},
+                {w:"gold",cn:"金色的"},{w:"light",cn:"淡色的"},{w:"dark",cn:"暗色的"}
+            ]},
+            { name:"Unit 5 词汇2 - Materials", words:[
+                {w:"plastic",cn:"塑料"},{w:"wool",cn:"羊毛"},{w:"wood",cn:"木材"},
+                {w:"cut them up",cn:"把他们剪碎"},{w:"cut them out",cn:"切出来"},{w:"glue",cn:"胶水"},
+                {w:"These scissors are made of metal.",cn:"这剪刀是金属做的。"},
+                {w:"This scarf is made of wool.",cn:"这条围巾是羊毛做的。"},
+                {w:"My box is made of plastic.",cn:"我的盒子是塑料做的。"},
+                {w:"My table's made of wood.",cn:"我的桌子是木头做的。"},
+                {w:"That crown is made of brown card.",cn:"王冠是用棕色卡片做的。"},
+                {w:"silver wings",cn:"银色的翅膀"}
+            ]},
+            { name:"Unit 6 词汇1 - School Subjects", words:[
+                {w:"in Turkey",cn:"在土耳其"},{w:"geography",cn:"地理"},{w:"history",cn:"历史"},
+                {w:"sports",cn:"运动"},{w:"maths",cn:"数学"},{w:"language",cn:"语言"},
+                {w:"music",cn:"音乐"},{w:"science",cn:"科学"},{w:"IT",cn:"信息技术"},{w:"art",cn:"美术"}
+            ]},
+            { name:"Unit 6 词汇2 - Technology", words:[
+                {w:"laptop",cn:"笔记本电脑"},{w:"apps",cn:"应用软件"},{w:"an e-book",cn:"一本电子书"},
+                {w:"a special rucksack",cn:"一个特殊的帆布背包"},
+                {w:"an online dictionary",cn:"一本在线词典"},{w:"bin",cn:"箱子"},
+                {w:"Internet",cn:"互联网"},{w:"find safe websites",cn:"查找安全网站"},
+                {w:"paste a photo or two",cn:"粘贴两张照片"},
+                {w:"scissors",cn:"剪刀"},{w:"glue",cn:"胶"}
+            ]},
+            { name:"Unit 7 词汇1 - Jobs", words:[
+                {w:"in Spain",cn:"在西班牙"},{w:"actor",cn:"演员"},{w:"waiter",cn:"服务员"},
+                {w:"cook",cn:"厨师"},{w:"driver",cn:"驾驶员"},{w:"journalist",cn:"记者"},
+                {w:"photographer",cn:"摄影师"},{w:"artist",cn:"艺术家"},{w:"designer",cn:"设计师"},
+                {w:"singer",cn:"歌手"},{w:"acrobat",cn:"杂技演员"}
+            ]},
+            { name:"Unit 7 词汇2 - Personality", words:[
+                {w:"What's he like?",cn:"他是什么样子的?"},{w:"interesting",cn:"有趣的"},
+                {w:"kind",cn:"友善的"},{w:"friendly",cn:"友好的"},{w:"clever",cn:"聪明的"},
+                {w:"lazy",cn:"懒惰的"},{w:"lovely",cn:"可爱的"},{w:"unkind",cn:"不友善"},
+                {w:"unfriendly",cn:"不友好"},{w:"popular",cn:"受欢迎"},{w:"brave",cn:"勇敢的"}
+            ]},
+            { name:"Unit 8 词汇1 - Directions", words:[
+                {w:"city break",cn:"城市休息"},{w:"in the USA",cn:"在美国"},
+                {w:"They're lost.",cn:"他们迷路了"},{w:"north",cn:"北"},{w:"east",cn:"东"},
+                {w:"south",cn:"南"},{w:"west",cn:"西"},{w:"left",cn:"左"},{w:"right",cn:"右"},
+                {w:"straight on",cn:"一直向前"},{w:"on road 95",cn:"在95号公路上"},
+                {w:"get to road 9",cn:"到达9号公路"}
+            ]},
+            { name:"Unit 8 词汇2 - Buildings in Town", words:[
+                {w:"airport",cn:"机场"},{w:"buildings",cn:"建筑物"},{w:"banks",cn:"银行"},
+                {w:"money",cn:"钱"},{w:"post office",cn:"邮局"},{w:"buy some stamps",cn:"买一些邮票"},
+                {w:"chemist",cn:"化学家"},{w:"theatre",cn:"剧院"},
+                {w:"visit a museum",cn:"参观一个博物馆"},{w:"near the university",cn:"靠近大学"},
+                {w:"a brilliant hotel",cn:"一家非常棒的酒店"},{w:"restaurant",cn:"餐厅"}
+            ]},
+            { name:"Unit 9 词汇1 - Adjectives", words:[
+                {w:"What's the hero called?",cn:"英雄叫什么名字?"},{w:"in Mexico",cn:"在墨西哥"},
+                {w:"noisy",cn:"吵的"},{w:"huge",cn:"巨大的"},{w:"alone",cn:"独自一人的"},
+                {w:"strange",cn:"奇怪"},{w:"horrible",cn:"可怕"},{w:"little",cn:"小的"},
+                {w:"lucky",cn:"幸运"},{w:"excellent",cn:"优秀"},{w:"special",cn:"特别"}
+            ]},
+            { name:"Unit 9 词汇2 - Packing & Travel", words:[
+                {w:"This year's tour is over.",cn:"今年的巡演结束了。"},
+                {w:"pack all your boxes",cn:"打包你的所有盒子"},
+                {w:"the enormous tent",cn:"巨大的帐篷"},{w:"find my pyjamas",cn:"找到我的睡衣"},
+                {w:"pack my trainers",cn:"打包我的运动鞋"},{w:"pack my suitcase",cn:"收拾我的手提箱"},
+                {w:"rucksack",cn:"帆布背包"},{w:"make sandcastles by the sea",cn:"在海边制作沙堡"},
+                {w:"postcard",cn:"明信片"},{w:"views of Mexico",cn:"墨西哥风景"},
+                {w:"stamp",cn:"邮票"},{w:"the post office",cn:"邮局"}
+            ]}
+        ]
+    }
+};
 
-        function resetUI() {
-            document.getElementById('answers').style.display = 'none';
-            document.getElementById('previewArea').style.display = 'block';
-            document.getElementById('starting').style.display = 'flex';
-            document.getElementById('starting').textContent = '准备就绪，点击开始';
-            document.getElementById('currentWord').style.display = 'none';
-            document.getElementById('startBtn').style.display = 'inline-block';
-            document.getElementById('pauseBtn').style.display = 'none';
-            document.getElementById('resumeBtn').style.display = 'none';
-            document.getElementById('restartBtn').style.display = 'none';
-            document.getElementById('daySelect').disabled = false;
-            document.getElementById('speechRate').disabled = false;
-            document.getElementById('repeatCount').disabled = false;
-            document.getElementById('waitTime').disabled = false;
-        }
+// ===== 状态 =====
+let currentUser=null,userData={};
+let sessionWords=[],sessionIndex=0,isRunning=false,isPaused=false,isReviewMode=false;
+let wrongInSession=[],sessionUnitKey="";
+const synth=window.speechSynthesis||null;
+let currentUtterance=null,usVoice=null;
 
-        function unlockAudio() {
-            const u = new SpeechSynthesisUtterance("");
-            window.speechSynthesis.speak(u);
-        }
+function loadVoices(){
+    if(!synth)return;
+    try{
+        const v=synth.getVoices();
+        usVoice=v.find(x=>x.lang==='en-US'&&x.name.toLowerCase().includes('google'))||
+                v.find(x=>x.lang==='en-US'&&x.name.includes('Samantha'))||
+                v.find(x=>x.lang==='en-US'&&x.name.includes('Zira'))||
+                v.find(x=>x.lang==='en-US')||v.find(x=>x.lang.startsWith('en'));
+    }catch(e){}
+}
+try{loadVoices();}catch(e){}
+try{if(synth&&synth.onvoiceschanged!==undefined)synth.onvoiceschanged=loadVoices;}catch(e){}
 
-        async function startDictation() {
-            if (!('speechSynthesis' in window)) {
-                alert("您的浏览器不支持语音朗读功能，请使用 Chrome/Edge/Safari 等现代浏览器。");
-                return;
-            }
+function saveData(){try{localStorage.setItem('pu_userData',JSON.stringify(userData));}catch(e){}}
+function loadAllData(){try{userData=JSON.parse(localStorage.getItem('pu_userData')||'{}');}catch(e){userData={};}}
+function ensureUser(uid){
+    if(!userData[uid]){userData[uid]={name:'',joinDate:todayStr(),lastDictDate:'',streak:0,masteredWords:{},errorWords:{},sessionHistory:[]};}
+    return userData[uid];
+}
+function getUserData(){return ensureUser(currentUser.id);}
+function todayStr(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
 
-            unlockAudio();
+function openScreen(id){
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo(0,0);
+    if(id==='screen-login'){document.getElementById('login-id').value='';document.getElementById('login-error').style.display='none';initLoginScreen();}
+    if(id==='screen-home')renderHome();
+    if(id==='screen-mastered')renderMastered();
+    if(id==='screen-errors')renderErrors();
+}
 
-            isRunning = true;
-            currentIndex = 0;
-            document.getElementById('daySelect').disabled = true;
-            document.getElementById('speechRate').disabled = true;
-            document.getElementById('repeatCount').disabled = true;
-            document.getElementById('waitTime').disabled = true;
-            document.getElementById('startBtn').style.display = 'none';
-            document.getElementById('pauseBtn').style.display = 'inline-block';
-            document.getElementById('pauseBtn').disabled = false;
-            document.getElementById('restartBtn').style.display = 'none';
-            document.getElementById('answers').style.display = 'none';
-            document.getElementById('previewArea').style.display = 'none';
+function initLoginScreen(){
+    loadAllData();
+    const chips=document.getElementById('user-chips');
+    const box=document.getElementById('existing-users-box');
+    const users=Object.entries(userData).filter(([k])=>k!=='__meta');
+    if(users.length>0){
+        box.style.display='block';
+        chips.innerHTML=users.map(([id,u])=>`<span class="user-chip" onclick="quickLogin('${id}')">👤 ${u.name||id}</span>`).join('');
+    }else{box.style.display='none';}
+}
+function quickLogin(uid){const u=userData[uid];if(!u)return;currentUser={id:uid,name:u.name||uid};afterLogin();}
+function doLogin(){
+    try{
+        var id=document.getElementById('login-id').value.trim().toUpperCase();
+        if(!id){document.getElementById('login-error').textContent='请输入学号';document.getElementById('login-error').style.display='block';return;}
+        try{userData=JSON.parse(localStorage.getItem('pu_userData')||'{}');}catch(e){userData={};}
+        if(!userData[id]){userData[id]={name:id,joinDate:todayStr(),lastDictDate:'',streak:0,masteredWords:{},errorWords:{},sessionHistory:[]};try{localStorage.setItem('pu_userData',JSON.stringify(userData));}catch(e){}}
+        currentUser={id:id,name:userData[id].name||id};
+        document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
+        document.getElementById('screen-home').classList.add('active');
+        window.scrollTo(0,0);renderHome();
+    }catch(err){document.getElementById('login-error').textContent='出错了：'+err.message;document.getElementById('login-error').style.display='block';}
+}
+function afterLogin(){saveData();openScreen('screen-home');}
 
-            const startingEl = document.getElementById('starting');
-            startingEl.style.display = 'flex';
-            
-            for (let i = 3; i > 0; i--) {
-                startingEl.textContent = `听写将在 ${i} 秒后开始...`;
-                await sleep(1000);
-            }
-            startingEl.style.display = 'none';
-            document.getElementById('currentWord').style.display = 'flex';
+function renderHome(){
+    const ud=getUserData();
+    const mc=Object.values(ud.masteredWords).filter(v=>v.mastered).length;
+    const ec=Object.keys(ud.errorWords).length;
+    document.getElementById('stat-streak').textContent=ud.streak;
+    document.getElementById('stat-mastered').textContent=mc;
+    document.getElementById('stat-error').textContent=ec;
+    document.getElementById('greeting-name').textContent=`Hi，${ud.name||currentUser.name}！👋`;
+    document.getElementById('greeting-sub').textContent=ud.streak>1?`已坚持 ${ud.streak} 天，继续加油！`:'今天也要加油哦！';
+    document.getElementById('review-alert').style.display=ec>=10?'block':'none';
+    const rqBtn=document.getElementById('review-quick-btn');
+    if(ec>0){rqBtn.style.display='flex';document.getElementById('review-quick-count').textContent=`${ec}个待练`;}
+    else{rqBtn.style.display='none';}
+    if(document.getElementById('sel-grade').options.length===0){initSelectors();}else{updatePreview();}
+}
+function updateStreak(ud){
+    const today=todayStr();
+    if(ud.lastDictDate===today)return;
+    const y=new Date();y.setDate(y.getDate()-1);
+    const yStr=`${y.getFullYear()}-${String(y.getMonth()+1).padStart(2,'0')}-${String(y.getDate()).padStart(2,'0')}`;
+    ud.streak=ud.lastDictDate===yStr?(ud.streak||0)+1:1;
+    ud.lastDictDate=today;
+}
+function initSelectors(){
+    const g=document.getElementById('sel-grade');g.innerHTML='';
+    Object.keys(TEXTBOOK_DATA).forEach(k=>{const o=document.createElement('option');o.value=k;o.textContent=TEXTBOOK_DATA[k].gradeLabel;g.appendChild(o);});
+    onGradeChange();
+}
+function onGradeChange(){
+    const grade=document.getElementById('sel-grade').value;
+    const u=document.getElementById('sel-unit');u.innerHTML='';
+    TEXTBOOK_DATA[grade].units.forEach((x,i)=>{const o=document.createElement('option');o.value=i;o.textContent=x.name;u.appendChild(o);});
+    updatePreview();
+}
+function onUnitChange(){updatePreview();}
+function updatePreview(){
+    const grade=document.getElementById('sel-grade').value;
+    const ui=parseInt(document.getElementById('sel-unit').value);
+    const words=TEXTBOOK_DATA[grade]?.units[ui]?.words||[];
+    document.getElementById('preview-grid').innerHTML=words.map((item,i)=>{
+        const w=typeof item==='object'?item.w:item;
+        const cn=typeof item==='object'?item.cn:'';
+        return `<div class="preview-item"><span class="num">${i+1}</span><div class="word">${w}</div>${cn?`<div class="cn">${cn}</div>`:''}</div>`;
+    }).join('');
+}
 
-            for (let i = 0; i < currentDayWords.length; i++) {
-                currentIndex = i;
-                updateProgress();
-                await dictateItem(i);
-                
-                while (isPaused) {
-                    await sleep(100);
-                }
-            }
+function unlockAudio(){
+    if(!synth)return;
+    try{const u=new SpeechSynthesisUtterance('');synth.speak(u);synth.cancel();}catch(e){}
+    if(!usVoice){try{const v=synth.getVoices();usVoice=v.find(x=>x.lang==='en-US')||v.find(x=>x.lang.startsWith('en'))||v[0]||null;}catch(e){}}
+}
+function startDictation(){
+    unlockAudio();
+    const grade=document.getElementById('sel-grade').value;
+    const ui=parseInt(document.getElementById('sel-unit').value);
+    const unit=TEXTBOOK_DATA[grade].units[ui];
+    const orderMode=document.getElementById('set-order').value;
+    isReviewMode=false;
+    let words=unit.words.map(item=>typeof item==='object'?item:{w:item,cn:''});
+    if(orderMode==='random'){words=[...words];for(let i=words.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[words[i],words[j]]=[words[j],words[i]];}}
+    sessionWords=words;sessionUnitKey=`${grade}__${ui}`;
+    document.getElementById('run-unit-name').textContent=unit.name+(orderMode==='random'?' 🔀':'');
+    openScreen('screen-running');runDictation();
+}
+function startReviewDictation(){
+    unlockAudio();
+    const ud=getUserData();
+    const errWords=Object.keys(ud.errorWords);
+    if(errWords.length===0){alert('错题本是空的！');return;}
+    isReviewMode=true;
+    const allWords={};
+    Object.values(TEXTBOOK_DATA).forEach(g=>g.units.forEach(u=>u.words.forEach(item=>{const w=typeof item==='object'?item.w:item;const cn=typeof item==='object'?item.cn:'';allWords[w]=cn;})));
+    sessionWords=errWords.map(w=>({w,cn:allWords[w]||''}));
+    sessionUnitKey='__review__';
+    document.getElementById('run-unit-name').textContent='🔁 错词复习';
+    openScreen('screen-running');runDictation();
+}
 
-            finishDictation();
-        }
+async function runDictation(){
+    isRunning=true;isPaused=false;sessionIndex=0;wrongInSession=[];
+    const wordEl=document.getElementById('run-word');
+    const statusEl=document.getElementById('run-status');
+    const ordinalEl=document.getElementById('run-ordinal');
+    const total=sessionWords.length;
+    if(synth){synth.cancel();const w=new SpeechSynthesisUtterance('');synth.speak(w);}
+    statusEl.textContent='准备开始...';
+    for(let i=3;i>0;i--){wordEl.textContent=i;await sleep(900);}
+    wordEl.textContent='';
+    while(sessionIndex<total&&isRunning){
+        updateRunProgress();
+        await waitWhilePaused();
+        if(!isRunning)break;
+        const word=sessionWords[sessionIndex];
+        const wordText=typeof word==='object'?word.w:word;
+        ordinalEl.textContent=`第 ${sessionIndex+1} 个 / 共 ${total} 个`;
+        wordEl.style.animation='none';wordEl.offsetHeight;wordEl.style.animation='popIn 0.35s both';
+        wordEl.textContent=`#${sessionIndex+1}`;wordEl.style.color='#6b7280';
+        statusEl.textContent='🔊 朗读中...';
+        const repeat=parseInt(document.getElementById('set-repeat').value);
+        for(let r=0;r<repeat;r++){await waitWhilePaused();if(!isRunning)break;await speakWord(wordText);if(r<repeat-1)await sleep(1000);}
+        if(!isRunning)break;
+        wordEl.style.color='#e0e7ff';statusEl.textContent='✍️ 书写中...';
+        await runCountdown(parseInt(document.getElementById('set-wait').value));
+        sessionIndex++;
+    }
+    if(isRunning)showResult();
+}
+async function runCountdown(seconds){
+    const wrap=document.getElementById('countdown-wrap');
+    const arcEl=document.getElementById('countdown-arc');
+    const numEl=document.getElementById('countdown-num');
+    const total_ms=seconds*1000;const R=22,C=2*Math.PI*R;
+    wrap.style.display='block';arcEl.style.strokeDasharray=C;arcEl.style.strokeDashoffset=0;
+    const start=Date.now();
+    while(true){
+        if(!isRunning)break;await waitWhilePaused();
+        const elapsed=Date.now()-start;const remain=Math.max(0,total_ms-elapsed);
+        arcEl.style.strokeDashoffset=C*(1-remain/total_ms);numEl.textContent=Math.ceil(remain/1000);
+        if(remain<=0)break;await sleep(80);
+    }
+    wrap.style.display='none';
+}
+function updateRunProgress(){
+    const total=sessionWords.length,pct=(sessionIndex/total)*100;
+    document.getElementById('run-progress-fill').style.width=pct+'%';
+    document.getElementById('run-progress-text').textContent=`${sessionIndex} / ${total}`;
+}
+async function waitWhilePaused(){while(isPaused&&isRunning)await sleep(200);}
+function togglePause(){
+    isPaused=!isPaused;
+    const btn=document.getElementById('pause-btn');
+    if(isPaused){if(synth)synth.cancel();btn.textContent='▶ 继续';document.getElementById('run-status').textContent='⏸ 已暂停';}
+    else{btn.textContent='⏸ 暂停';}
+}
+function stopDictation(){
+    if(confirm('确定要提前结束吗？')){isRunning=false;if(synth)synth.cancel();openScreen('screen-home');}
+}
+function speakWord(text){
+    return new Promise(resolve=>{
+        if(!synth){setTimeout(resolve,800);return;}
+        if(!usVoice){try{const v=synth.getVoices();usVoice=v.find(x=>x.lang==='en-US')||v.find(x=>x.lang.startsWith('en'))||v[0]||null;}catch(e){}}
+        synth.cancel();
+        const u=new SpeechSynthesisUtterance(text);
+        u.lang='en-US';u.rate=parseFloat(document.getElementById('set-rate').value);u.pitch=1.0;
+        if(usVoice)u.voice=usVoice;
+        currentUtterance=u;
+        u.onend=()=>{currentUtterance=null;resolve();};
+        u.onerror=()=>{currentUtterance=null;resolve();};
+        synth.speak(u);
+        const timeout=Math.max(5000,text.length*600);
+        setTimeout(()=>{if(currentUtterance===u){currentUtterance=null;resolve();}},timeout);
+    });
+}
 
-        async function dictateItem(index) {
-            const word = currentDayWords[index];
-            const displayEl = document.getElementById('currentWord');
-            
-            const repeatCount = parseInt(document.getElementById('repeatCount').value);
-            const waitTime = parseInt(document.getElementById('waitTime').value);
+function showResult(){
+    openScreen('screen-result');isRunning=false;
+    document.getElementById('answer-check-grid').innerHTML=sessionWords.map((item,i)=>{
+        const w=typeof item==='object'?item.w:item;
+        const cn=typeof item==='object'?item.cn:'';
+        return `<div class="answer-check-item" id="aci-${i}"><span class="num">${i+1}</span><div class="word">${w}</div>${cn?`<div class="cn">${cn}</div>`:''}<div class="check-box" id="cb-${i}" onclick="toggleWrong(${i})"></div></div>`;
+    }).join('');
+    updateResultSummary();
+    const ud=getUserData();
+    document.getElementById('result-streak').textContent=`🔥 今天是你坚持的第 ${ud.streak} 天`;
+    refreshEncourage(0,sessionWords.length);
+}
+function toggleWrong(idx){
+    const item=document.getElementById(`aci-${idx}`);
+    const cb=document.getElementById(`cb-${idx}`);
+    const word=typeof sessionWords[idx]==='object'?sessionWords[idx].w:sessionWords[idx];
+    const isNowWrong=!item.classList.contains('wrong');
+    item.classList.toggle('wrong',isNowWrong);cb.classList.toggle('checked',isNowWrong);cb.textContent=isNowWrong?'✗':'';
+    if(isNowWrong){if(!wrongInSession.includes(word))wrongInSession.push(word);}
+    else{wrongInSession=wrongInSession.filter(w=>w!==word);}
+    updateResultSummary();
+}
+function updateResultSummary(){
+    const wrong=wrongInSession.length,correct=sessionWords.length-wrong;
+    const score=Math.round((correct/sessionWords.length)*100);
+    document.getElementById('result-score').textContent=score+'分';
+    document.getElementById('sum-correct').textContent=`✅ ${correct} 个全对`;
+    document.getElementById('sum-wrong').textContent=`❌ ${wrong} 个错误`;
+    document.getElementById('result-star').textContent=score>=90?'🌟':score>=70?'🎉':'💪';
+    refreshEncourage(wrong,sessionWords.length);
+}
+function refreshEncourage(wrong,total){
+    const ud=getUserData();
+    let msg=wrong===0?`太棒了！全部正确！你是单词大师！🏆`:
+            wrong<=2?`非常好！只错了 ${wrong} 个，继续加油！😊`:
+            wrong<=total*0.3?`不错哦！已经坚持了 ${ud.streak} 天，为你点赞！⭐`:
+            `没关系，多练几次就记住啦！坚持就是胜利！💪`;
+    document.getElementById('result-encourage').textContent=msg;
+}
+function submitResult(){
+    const ud=getUserData();
+    wrongInSession.forEach(w=>{ud.errorWords[w]=(ud.errorWords[w]||0)+1;if(ud.masteredWords[w])delete ud.masteredWords[w];});
+    sessionWords.forEach(item=>{
+        const w=typeof item==='object'?item.w:item;
+        if(wrongInSession.includes(w))return;
+        if(!ud.masteredWords[w])ud.masteredWords[w]={correctStreak:0};
+        ud.masteredWords[w].correctStreak=(ud.masteredWords[w].correctStreak||0)+1;
+        if(ud.masteredWords[w].correctStreak>=2){ud.masteredWords[w].mastered=true;delete ud.errorWords[w];}
+    });
+    updateStreak(ud);saveData();openScreen('screen-home');
+}
 
-            displayEl.textContent = `单词 ${index + 1}`;
-            displayEl.style.color = "#2d3748";
+function buildCnMap(){
+    const map={};
+    Object.values(TEXTBOOK_DATA).forEach(g=>g.units.forEach(u=>u.words.forEach(item=>{if(typeof item==='object')map[item.w]=item.cn;})));
+    return map;
+}
+function renderMastered(){
+    const ud=getUserData();
+    const mastered=Object.entries(ud.masteredWords).filter(([,v])=>v&&v.mastered);
+    const el=document.getElementById('mastered-content');
+    if(mastered.length===0){el.innerHTML='<div class="empty-tip">还没有掌握的单词，加油听写！🌱</div>';return;}
+    const cnMap=buildCnMap();
+    el.innerHTML=`<div style="color:var(--sub);font-size:0.8rem;margin-bottom:8px;">共掌握 ${mastered.length} 个单词 🎉</div><div class="word-list-grid">`+
+        mastered.map(([w])=>`<div class="word-card"><div class="w">${w}</div>${cnMap[w]?`<div class="wc">${cnMap[w]}</div>`:''}<div class="cnt">已掌握 ⭐</div></div>`).join('')+`</div>`;
+}
+function renderErrors(){
+    const ud=getUserData();
+    const errors=Object.entries(ud.errorWords);
+    const el=document.getElementById('errors-content');
+    const btn=document.getElementById('error-review-btn');
+    const cnMap=buildCnMap();
+    if(errors.length===0){el.innerHTML='<div class="empty-tip">错题本是空的，你太厉害了！🌟</div>';btn.style.display='none';return;}
+    btn.style.display='block';
+    el.innerHTML=`<div style="color:var(--sub);font-size:0.8rem;margin-bottom:8px;">共 ${errors.length} 个错词，别忘了复习哦！</div><div class="word-list-grid">`+
+        errors.sort((a,b)=>b[1]-a[1]).map(([w,cnt])=>`<div class="word-card"><div class="w">${w}</div>${cnMap[w]?`<div class="wc">${cnMap[w]}</div>`:''}<div class="cnt">错了 ${cnt} 次</div></div>`).join('')+`</div>`;
+}
 
-            for (let r = 0; r < repeatCount; r++) {
-                if (isPaused) return;
-                
-                await speak(word.text);
-                
-                if (r < repeatCount - 1) {
-                    await sleep(1500);
-                }
-            }
-
-            displayEl.style.color = "#718096";
-            for (let t = waitTime; t > 0; t--) {
-                if (isPaused) return;
-                displayEl.textContent = `等待 ${t} 秒...`;
-                await sleep(1000);
-            }
-        }
-
-        function speak(text) {
-            return new Promise((resolve) => {
-                const utterance = new SpeechSynthesisUtterance(text);
-                utterance.lang = 'en-US';
-                const selectedRate = document.getElementById('speechRate').value;
-                utterance.rate = parseFloat(selectedRate);
-                
-                utterance.onend = () => {
-                    resolve();
-                };
-                
-                utterance.onerror = (e) => {
-                    console.error("Speech error:", e);
-                    resolve();
-                };
-
-                window.speechSynthesis.speak(utterance);
-            });
-        }
-
-        function updateProgress() {
-            const total = currentDayWords.length;
-            const current = currentIndex + 1;
-            const percentage = Math.round((current / total) * 100);
-            
-            document.getElementById('currentProgress').textContent = `${current} / ${total}`;
-            const bar = document.getElementById('progressBar');
-            bar.style.width = `${percentage}%`;
-            bar.textContent = `${percentage}%`;
-        }
-
-        function pauseDictation() {
-            isPaused = true;
-            window.speechSynthesis.cancel();
-            document.getElementById('pauseBtn').style.display = 'none';
-            document.getElementById('resumeBtn').style.display = 'inline-block';
-            document.getElementById('currentWord').textContent = "已暂停";
-        }
-
-        function resumeDictation() {
-            isPaused = false;
-            document.getElementById('resumeBtn').style.display = 'none';
-            document.getElementById('pauseBtn').style.display = 'inline-block';
-        }
-
-        function resetDictation() {
-            window.speechSynthesis.cancel();
-            isRunning = false;
-            isPaused = false;
-            resetUI();
-            loadDay();
-        }
-
-        function finishDictation() {
-            isRunning = false;
-            document.getElementById('currentWord').textContent = "听写完成！";
-            document.getElementById('pauseBtn').style.display = 'none';
-            document.getElementById('restartBtn').style.display = 'inline-block';
-            document.getElementById('daySelect').disabled = false;
-            document.getElementById('speechRate').disabled = false;
-            document.getElementById('repeatCount').disabled = false;
-            document.getElementById('waitTime').disabled = false;
-            document.getElementById('previewArea').style.display = 'none';
-            
-            showAnswers();
-        }
-
-        function showAnswers() {
-            const list = document.getElementById('answerList');
-            list.innerHTML = '';
-            
-            currentDayWords.forEach((word, index) => {
-                const item = document.createElement('div');
-                item.className = 'answer-item';
-                item.innerHTML = `
-                    <div class="answer-left">
-                        <span class="answer-number">${index + 1}.</span>
-                        <span class="answer-text">${word.text}</span>
-                    </div>
-                    <span class="answer-meaning">${word.meaning}</span>
-                `;
-                list.appendChild(item);
-            });
-
-            document.getElementById('answers').style.display = 'block';
-            document.getElementById('answers').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        function sleep(ms) {
-            return new Promise(resolve => setTimeout(resolve, ms));
-        }
-    </script>
+(function init(){
+    try{var isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent);if(isIOS)document.getElementById('iosTip').style.display='block';}catch(e){}
+    initLoginScreen();
+})();
+</script>
 </body>
 </html>
